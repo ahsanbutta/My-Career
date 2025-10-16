@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "npx http-server . -p 5500 -o",
-    "build": "echo 'Frontend build completed'",
+    "build": "echo 'Static files ready for deployment'",
     "dev": "npx http-server . -p 5500 -o"
   },
   "keywords": [
