@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Work — MyCareer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#ea580c',
+            ntsBlue600: '#2563eb',
+            ntsBlue800: '#1e40af',
+            ntsSlate50: '#f8fafc',
+            ntsSlate100: '#f1f5f9',
+            ntsSlate200: '#e2e8f0',
+            ntsSlate600: '#475569',
+            ntsSlate800: '#1f2937',
+            ntsGreen600: '#059669',
+            ntsRed600: '#dc2626',
+            ntsOrange600: '#d97706'
+          }
+        }
+      }
+    }
+  </script>
+  <script src="api-integration.js"></script>
+  <style>
+    .card { background:#fff; border:1px solid #e2e8f0; border-radius:14px; box-shadow: 0 10px 28px rgba(2,6,23,0.06) }
+    .badge { font-weight:700; font-size:12px; padding:6px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:6px }
+  </style>
+</head>
+<body class="bg-ntsSlate50 text-ntsSlate800">
+  <header class="bg-white border-b border-ntsSlate200 sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="index.html" class="text-lg font-extrabold text-ntsBlue800">MyCareer</a>
+      <nav class="flex items-center gap-3">
+        <a href="index.html" class="text-sm text-ntsSlate600 hover:text-ntsBlue800">Home</a>
+        <a href="settings.html" class="text-sm text-ntsSlate600 hover:text-ntsBlue800">Settings</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-extrabold text-ntsSlate800">Your Work</h1>
+        <p class="text-sm text-ntsSlate600">All notifications about your job applications</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="refreshBtn" class="px-4 py-2 rounded-lg bg-gradient-to-r from-ntsBlue600 to-ntsBlue800 text-white font-semibold shadow hover:opacity-95">Refresh</button>
+      </div>
+    </div>
+
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+      <div class="card p-4">
+        <div class="text-sm text-ntsSlate600">Pending</div>
+        <div id="countPending" class="text-2xl font-extrabold mt-1">0</div>
+      </div>
+      <div class="card p-4">
+        <div class="text-sm text-ntsSlate600">Approved</div>
+        <div id="countApproved" class="text-2xl font-extrabold mt-1">0</div>
+      </div>
+      <div class="card p-4">
+        <div class="text-sm text-ntsSlate600">Rejected</div>
+        <div id="countRejected" class="text-2xl font-extrabold mt-1">0</div>
+      </div>
+    </section>
+
+    <section class="card p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-extrabold">Notifications</h2>
+        <div class="flex items-center gap-2">
+          <select id="statusFilter" class="border border-ntsSlate200 rounded-lg px-3 py-2 text-sm">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="notifications" class="divide-y divide-ntsSlate200">
+        <!-- rows injected here -->
+      </div>
+      <div id="emptyState" class="hidden text-center py-16">
+        <div class="text-5xl mb-4">📭</div>
+        <div class="font-extrabold text-ntsSlate800 mb-1">No notifications</div>
+        <div class="text-sm text-ntsSlate600">Apply to jobs to see updates here.</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function getCurrentEmail(){
+      return localStorage.getItem('currentUserEmail') || '';
+    }
+    function getLocalAppsByUser(){
+      // structure: { [email]: [{...application}] }
+      const j = localStorage.getItem('applicationsByUser');
+      if(!j) return {};
+      try { return JSON.parse(j) || {}; } catch { return {}; }
+    }
+
+    function statusBadge(status){
+      const map = {
+        approved: 'bg-green-100 text-ntsGreen600',
+        rejected: 'bg-red-100 text-ntsRed600',
+        pending: 'bg-orange-100 text-ntsOrange600'
+      };
+      const cls = map[status] || 'bg-ntsSlate100 text-ntsSlate600';
+      const label = (status||'').charAt(0).toUpperCase() + (status||'').slice(1);
+      return `<span class="badge ${cls}">• ${label}</span>`;
+    }
+
+    function fmt(dateStr){
+      if(!dateStr) return '';
+      const d = new Date(dateStr);
+      if(isNaN(d)) return dateStr;
+      return d.toLocaleDateString();
+    }
+
+    function renderCounts(list){
+      const c = { pending:0, approved:0, rejected:0 };
+      list.forEach(a=>{ if(c[a.status] !== undefined) c[a.status]++; });
+      document.getElementById('countPending').textContent = c.pending;
+      document.getElementById('countApproved').textContent = c.approved;
+      document.getElementById('countRejected').textContent = c.rejected;
+    }
+
+    function renderRows(list){
+      const wrap = document.getElementById('notifications');
+      const empty = document.getElementById('emptyState');
+      if(!list.length){
+        wrap.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+      wrap.innerHTML = list.map(a=>{
+        return `
+          <div class="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <div class="font-extrabold">${a.jobTitle || a.title || 'Job Application'}</div>
+              <div class="text-sm text-ntsSlate600">Applied: ${fmt(a.appliedDate || a.createdAt)}</div>
+              ${a.reviewNotes ? `<div class="text-xs text-ntsSlate600 mt-1">Notes: ${a.reviewNotes}</div>` : ''}
+            </div>
+            <div class="flex items-center gap-3">
+              ${statusBadge(a.status)}
+              ${a.company ? `<span class="text-xs text-ntsSlate600">${a.company}</span>`: ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function applyFilter(list){
+      const f = document.getElementById('statusFilter').value;
+      if(!f) return list;
+      return list.filter(a=> (a.status||'').toLowerCase() === f);
+    }
+
+    async function loadNotifications(){
+      const email = getCurrentEmail();
+      let items = [];
+
+      // Try API first (if token present)
+      try {
+        if (typeof api !== 'undefined' && api && (api.authToken || localStorage.getItem('authToken'))) {
+          const res = await api.getApplications(1, 100);
+          if(res && res.success && Array.isArray(res.data)){
+            // If backend returns all apps, filter to current user if email exists in record
+            items = res.data.filter(a => !email || (a.applicantEmail ? a.applicantEmail === email : true));
+          }
+        }
+      } catch (e) {
+        console.warn('API notifications failed, falling back to local storage', e);
+      }
+
+      // Fallback to local storage mapping
+      if(items.length === 0){
+        const map = getLocalAppsByUser();
+        items = (email && Array.isArray(map[email])) ? map[email] : [];
+      }
+
+      // Also consider any global mock applications in window scope (optional)
+      try {
+        if(items.length === 0 && Array.isArray(window.applications)){
+          items = window.applications.filter(a=> !email || a.applicantEmail === email);
+        }
+      } catch {}
+
+      // Normalize minimal fields used in the UI
+      items = items.map(a=>({
+        jobTitle: a.jobTitle || a.title || 'Job Application',
+        company: a.company || a.employer || '',
+        status: (a.status || 'pending').toLowerCase(),
+        appliedDate: a.appliedDate || a.createdAt || '',
+        reviewNotes: a.reviewNotes || ''
+      }));
+
+      // Render
+      const filtered = applyFilter(items);
+      renderCounts(items);
+      renderRows(filtered);
+      return items;
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', loadNotifications);
+    document.getElementById('statusFilter').addEventListener('change', loadNotifications);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadNotifications();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - MyCareer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #5a6d80;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .login-container {
+      background: #f5f7fa;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      font-size: 26px;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .login-container p {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      background-color: #fff;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .login-btn {
+      width: 100%;
+      background-color: #28a745;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background-color: #218838;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .register-link a {
+      color: #007b55;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <p>Welcome back! Please login to your account.</p>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required />
+      </div>
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+
+    <div class="register-link">
+      Don't have an account? <a href="register.html">Register here</a>
+    </div>
+  </div>
+<script type="module">
+  // Import Firebase functions from CDN
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+  import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    getDocs, 
+    query, 
+    where,
+    serverTimestamp 
+  } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBAj2SLWwMSBDB4jl0VLjVhea9W6FkhXF0",
+    authDomain: "my-career-project-a1885.firebaseapp.com",
+    projectId: "my-career-project-a1885",
+    storageBucket: "my-career-project-a1885.firebasestorage.app",
+    messagingSenderId: "1006665032949",
+    appId: "1:1006665032949:web:175f91f2559139cda8d1bc",
+    measurementId: "G-V34ZR2C9PV"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  
+  // Initialize Analytics only when supported
+  isSupported().then((supported) => {
+    if (supported) {
+      const analytics = getAnalytics(app);
+    }
+  });
+  // Login with Firebase Firestore
+  document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+      alert("❌ Please fill in all fields.");
+      return;
+    }
+
+    try {
+      // Query Firestore for user with this email
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        alert("❌ This email is not registered. Please register first.");
+        window.location.href = "register.html";
+        return;
+      }
+
+      // Check password (in production, use proper authentication)
+      let userFound = false;
+      querySnapshot.forEach((doc) => {
+        const userData = doc.data();
+        if (userData.password === password) {
+          userFound = true;
+          
+          // Store login session
+          localStorage.setItem("loggedIn", "true");
+          localStorage.setItem("currentUserEmail", email);
+          localStorage.setItem("currentUserId", doc.id);
+          localStorage.setItem("isRegistered", "true");
+          
+          // Log login activity to Firestore
+          addDoc(collection(db, "loginActivity"), {
+            userId: doc.id,
+            email: email,
+            loginTime: serverTimestamp(),
+            userAgent: navigator.userAgent
+          });
+
+          alert("✅ Login successful!Welcome to MyCareer");
+          window.location.href = "index.html";
+        }
+      });
+
+      if (!userFound) {
+        alert("❌ Incorrect password. Please try again.");
+      }
+
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("❌ Login failed. Please try again.");
+    }
+  });
+
+</script>
+</body>
+</html>

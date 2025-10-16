@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Your Profile — MyCareer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{ --card:#ffffff; --muted:#6b7280; --accent:#2563eb; --border:#e6eefc; }
+    .card{ background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 28px rgba(2,6,23,0.06); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <header class="bg-white border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="index.html" class="font-extrabold text-blue-800">MyCareer</a>
+      <nav class="flex gap-2">
+        <a href="index.html" class="text-sm text-slate-600 hover:text-blue-800">Home</a>
+        <a href="settings.html" class="text-sm text-slate-600 hover:text-blue-800">Settings</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-extrabold">Your Profile</h1>
+
+      </div>
+      <div class="flex gap-2">
+        <a href="settings.html" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold">Edit Profile</a>
+        <button id="signOutBtn" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 font-semibold">Sign out</button>
+      </div>
+    </div>
+
+    <section class="card p-5 mb-6">
+      <div class="flex flex-col md:flex-row md:items-center gap-5">
+        <div id="avatar" class="w-24 h-24 rounded-full bg-indigo-50 flex items-center justify-center text-2xl font-black text-blue-800 overflow-hidden">U</div>
+        <div class="flex-1">
+          <div class="text-xl font-extrabold" id="name">User</div>
+          <div class="text-sm text-slate-600" id="email">email@example.com</div>
+          <div class="mt-1 inline-flex items-center gap-2 text-sm">
+            <span class="px-2 py-1 rounded bg-slate-100" id="role">Role: —</span>
+            <span class="px-2 py-1 rounded bg-slate-100" id="occupation">Occupation: —</span>
+            <span class="px-2 py-1 rounded bg-slate-100" id="organization">Organization: —</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="card p-5">
+        <div class="font-extrabold mb-3">Contact</div>
+        <div class="space-y-2 text-sm">
+          <div><span class="text-slate-500">Phone:</span> <span id="phone">—</span></div>
+          <div><span class="text-slate-500">Location:</span> <span id="location">—</span></div>
+          <div><span class="text-slate-500">Website:</span> <a id="website" href="#" target="_blank" class="text-blue-700 hover:underline">—</a></div>
+        </div>
+      </div>
+      <div class="card p-5">
+        <div class="font-extrabold mb-3">Identity</div>
+        <div class="space-y-2 text-sm">
+          <div><span class="text-slate-500">Pronouns:</span> <span id="pronouns">—</span></div>
+          <div><span class="text-slate-500">Recovery email:</span> <span id="recoveryEmail">—</span></div>
+        </div>
+      </div>
+      <div class="card p-5 md:col-span-2">
+        <div class="font-extrabold mb-3">Bio</div>
+        <div id="bio" class="text-sm text-slate-700">—</div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    // Import Firebase functions from CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+    import { 
+      getFirestore, 
+      collection, 
+      getDocs, 
+      query, 
+      where
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBAj2SLWwMSBDB4jl0VLjVhea9W6FkhXF0",
+      authDomain: "my-career-project-a1885.firebaseapp.com",
+      projectId: "my-career-project-a1885",
+      storageBucket: "my-career-project-a1885.firebasestorage.app",
+      messagingSenderId: "1006665032949",
+      appId: "1:1006665032949:web:175f91f2559139cda8d1bc",
+      measurementId: "G-V34ZR2C9PV"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    // Initialize Analytics
+    isSupported().then((supported) => {
+      if (supported) {
+        const analytics = getAnalytics(app);
+      }
+    });
+
+    // Helper functions
+    const qs = s => document.querySelector(s);
+    function getCurrentEmail(){ return localStorage.getItem('currentUserEmail'); }
+    function isLoggedIn(){ return localStorage.getItem('loggedIn') === 'true' && !!getCurrentEmail(); }
+
+    // Session guard
+    if(!isLoggedIn()){ alert('Please login/register first.'); window.location.href = 'login.html'; }
+
+    function setText(id, value){ const el = qs('#'+id); if(el) el.textContent = value || '—'; }
+
+    function setAvatar(u){
+      const el = qs('#avatar');
+      if(!el) return;
+      if(u.photo){
+        const img = new Image(); img.src = u.photo; img.style.width='100%'; img.style.height='100%'; img.style.borderRadius='999px';
+        el.innerHTML=''; el.appendChild(img);
+      } else {
+        el.textContent = (u.name?.trim()?.[0] || 'U').toUpperCase();
+      }
+    }
+
+    async function loadProfile(){
+      const email = getCurrentEmail();
+      
+      try {
+        // Query Firestore for user data
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+
+        let u = {}; // fallback
+        
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach((doc) => {
+            u = doc.data();
+          });
+          console.log("User profile loaded from Firestore:", u);
+        } else {
+          console.log("No user found in Firestore, using fallback");
+        }
+
+        // Update profile display with Firestore data
+        setAvatar(u);
+        setText('name', u.name || email || 'User');
+        setText('email', u.email || email || '');
+        setText('phone', u.phone || '');
+        setText('role', u.role ? `Role: ${u.role}` : 'Role: —');
+        setText('occupation', u.occupation ? `Occupation: ${u.occupation}` : 'Occupation: —');
+        setText('organization', u.organization ? `Organization: ${u.organization}` : 'Organization: —');
+        setText('location', u.location || '');
+        const web = u.website && u.website.trim() ? u.website.trim() : '';
+        const a = qs('#website'); if(a){ a.textContent = web || '—'; a.href = web || '#'; }
+        setText('pronouns', u.pronouns || '');
+        setText('recoveryEmail', u.recoveryEmail || '');
+        const bio = qs('#bio'); if(bio) bio.textContent = (u.bio && u.bio.trim()) ? u.bio.trim() : '—';
+
+      } catch (error) {
+        console.error("Error loading profile from Firestore:", error);
+        // Fallback display
+        setText('name', email || 'User');
+        setText('email', email || '');
+      }
+    }
+
+    qs('#signOutBtn').addEventListener('click', ()=>{
+      localStorage.setItem('loggedIn','false'); localStorage.removeItem('currentUserEmail');
+      alert('Signed out.'); window.location.href='index.html';
+    });
+
+    document.addEventListener('DOMContentLoaded', loadProfile);
+  </script>
+</body>
+</html>
