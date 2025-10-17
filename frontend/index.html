@@ -301,9 +301,16 @@
             animation: typewriter 3s steps(40, end);
         }
 
-        /* Ensure hidden class overrides responsive display classes */
+        /* Ensure hidden class overrides responsive display classes but respects mobile breakpoint */
         .auth-buttons.hidden {
             display: none !important;
+        }
+        
+        /* Always hide auth buttons on mobile screens */
+        @media (max-width: 767px) {
+            .auth-buttons {
+                display: none !important;
+            }
         }
     </style>
 </head>
