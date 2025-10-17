@@ -1737,6 +1737,14 @@
             // Hide mobile auth buttons and show mobile profile menu
             mobileAuthButtons && mobileAuthButtons.classList.add('hidden');
             mobileProfileMenu && mobileProfileMenu.classList.remove('hidden');
+          } else {
+            // User is not logged in - show auth buttons and hide profile menu
+            authButtons && authButtons.classList.remove('hidden');
+            profileMenu && profileMenu.classList.add('hidden');
+            
+            // Show mobile auth buttons and hide mobile profile menu
+            mobileAuthButtons && mobileAuthButtons.classList.remove('hidden');
+            mobileProfileMenu && mobileProfileMenu.classList.add('hidden');
           }
 
           // Toggle dropdown
