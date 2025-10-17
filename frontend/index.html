@@ -428,11 +428,6 @@
                 <a href="#" onclick="showContact(); return false;"
                     class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">Contact</a>
                 
-                <!-- Mobile Auth Buttons (shown when not logged in) -->
-                <div id="mobileAuthButtons" class="border-t border-gray-200 pt-3 mt-3">
-                    <a href="login.html" class="block px-3 py-2 text-base font-medium text-ntsBlue hover:bg-ntsBlue50 bg-ntsBlue100 rounded-md mx-2 mb-2 text-center">Login</a>
-                    <a href="register.html" class="block px-3 py-2 text-base font-medium text-white bg-ntsYellow hover:bg-yellow-400 rounded-md mx-2 text-center">Register</a>
-                </div>
 
                 <!-- Mobile Profile Menu (shown when logged in) -->
                 <div id="mobileProfileMenu" class="border-t border-gray-200 pt-3 mt-3 hidden">
@@ -1658,7 +1653,6 @@
           const signOutBtn = document.getElementById('signOutBtn');
           
           // Mobile menu elements
-          const mobileAuthButtons = document.getElementById('mobileAuthButtons');
           const mobileProfileMenu = document.getElementById('mobileProfileMenu');
           const mobileProfileName = document.getElementById('mobileProfileName');
           const mobileProfileAvatar = document.getElementById('mobileProfileAvatar');
@@ -1734,8 +1728,7 @@
             authButtons.classList.add('hidden');
             profileMenu.classList.remove('hidden');
             
-            // Hide mobile auth buttons and show mobile profile menu
-            mobileAuthButtons && mobileAuthButtons.classList.add('hidden');
+            // Show mobile profile menu when logged in
             mobileProfileMenu && mobileProfileMenu.classList.remove('hidden');
           } else {
             // User is not logged in - show auth buttons on desktop only and hide profile menu
@@ -1744,8 +1737,7 @@
             }
             profileMenu && profileMenu.classList.add('hidden');
             
-            // Show mobile auth buttons and hide mobile profile menu
-            mobileAuthButtons && mobileAuthButtons.classList.remove('hidden');
+            // Hide mobile profile menu when not logged in
             mobileProfileMenu && mobileProfileMenu.classList.add('hidden');
           }
 
