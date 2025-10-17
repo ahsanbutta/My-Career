@@ -422,6 +422,34 @@
                     class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">Services</a>
                 <a href="#" onclick="showContact(); return false;"
                     class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">Contact</a>
+                
+                <!-- Mobile Auth Buttons (shown when not logged in) -->
+                <div id="mobileAuthButtons" class="border-t border-gray-200 pt-3 mt-3">
+                    <a href="login.html" class="block px-3 py-2 text-base font-medium text-ntsBlue hover:bg-ntsBlue50 bg-ntsBlue100 rounded-md mx-2 mb-2 text-center">Login</a>
+                    <a href="register.html" class="block px-3 py-2 text-base font-medium text-white bg-ntsYellow hover:bg-yellow-400 rounded-md mx-2 text-center">Register</a>
+                </div>
+
+                <!-- Mobile Profile Menu (shown when logged in) -->
+                <div id="mobileProfileMenu" class="border-t border-gray-200 pt-3 mt-3 hidden">
+                    <div class="px-3 py-2 text-base font-medium text-gray-900 border-b border-gray-100 mb-2">
+                        <div class="flex items-center gap-2">
+                            <span id="mobileProfileAvatar" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-ntsBlue300 text-white font-bold text-sm">U</span>
+                            <span id="mobileProfileName" class="font-semibold">User</span>
+                        </div>
+                    </div>
+                    <a href="work.html" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">
+                        <span class="mr-3">📄</span> Your Work
+                    </a>
+                    <a href="profile.html" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">
+                        <span class="mr-3">👤</span> Your Profile
+                    </a>
+                    <a href="settings.html" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">
+                        <span class="mr-3">⚙️</span> Settings
+                    </a>
+                    <button id="mobileSignOutBtn" class="w-full text-left flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">
+                        <span class="mr-3">↪️</span> Sign Out
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
@@ -1623,6 +1651,13 @@
           const profileDropdown = document.getElementById('profileDropdown');
           const dropdownHeader = document.getElementById('dropdownHeader');
           const signOutBtn = document.getElementById('signOutBtn');
+          
+          // Mobile menu elements
+          const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+          const mobileProfileMenu = document.getElementById('mobileProfileMenu');
+          const mobileProfileName = document.getElementById('mobileProfileName');
+          const mobileProfileAvatar = document.getElementById('mobileProfileAvatar');
+          const mobileSignOutBtn = document.getElementById('mobileSignOutBtn');
 
           if (loggedIn && email && authButtons && profileMenu) {
             // Load user data from Firestore instead of localStorage
@@ -1663,6 +1698,12 @@
                 avatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
               }
               dropdownHeader && (dropdownHeader.textContent = displayName);
+              
+              // Update mobile menu elements
+              mobileProfileName && (mobileProfileName.textContent = displayName);
+              if (mobileProfileAvatar && displayName && displayName.length) {
+                mobileProfileAvatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
+              }
 
               console.log("User profile loaded from Firestore:", user);
 
@@ -1676,10 +1717,21 @@
                 avatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
               }
               dropdownHeader && (dropdownHeader.textContent = displayName);
+              
+              // Update mobile menu elements (fallback)
+              mobileProfileName && (mobileProfileName.textContent = displayName);
+              if (mobileProfileAvatar) {
+                mobileProfileAvatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
+              }
             }
 
+            // Hide desktop auth buttons and show profile menu
             authButtons.classList.add('hidden');
             profileMenu.classList.remove('hidden');
+            
+            // Hide mobile auth buttons and show mobile profile menu
+            mobileAuthButtons && mobileAuthButtons.classList.add('hidden');
+            mobileProfileMenu && mobileProfileMenu.classList.remove('hidden');
           }
 
           // Toggle dropdown
@@ -1691,13 +1743,19 @@
           });
           document.addEventListener('click', function () { hideDropdown(); });
 
-          // Sign out
-          signOutBtn && signOutBtn.addEventListener('click', function () {
+          // Sign out function
+          function handleSignOut() {
             localStorage.setItem('loggedIn', 'false');
             localStorage.removeItem('currentUserEmail');
             hideDropdown();
             window.location.href = 'index.html';
-          });
+          }
+          
+          // Desktop sign out
+          signOutBtn && signOutBtn.addEventListener('click', handleSignOut);
+          
+          // Mobile sign out
+          mobileSignOutBtn && mobileSignOutBtn.addEventListener('click', handleSignOut);
         } catch (e) {}
       });
     </script>

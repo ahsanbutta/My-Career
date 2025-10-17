@@ -1291,7 +1291,18 @@ async function applyJob() {
       }
     }
   } catch (e) {}
-  alert("Application submitted successfully!");
+  
+  // Close any open modals
+  closeApplicationModal();
+  closeModal();
+  
+  // Show success message and redirect to profile page
+  alert("Application submitted successfully! Redirecting to your profile to update your information.");
+  
+  // Redirect to profile page after a short delay
+  setTimeout(() => {
+    window.location.href = "profile.html";
+  }, 1000);
 }
 
 
