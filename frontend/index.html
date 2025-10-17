@@ -428,6 +428,11 @@
                 <a href="#" onclick="showContact(); return false;"
                     class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">Contact</a>
                 
+                <!-- Mobile Auth Buttons (shown when not logged in) -->
+                <div id="mobileAuthButtons" class="border-t border-gray-200 pt-3 mt-3 space-y-2">
+                    <a href="login.html" class="block w-full bg-white text-ntsBlue font-semibold px-4 py-3 rounded-lg border-2 border-ntsBlue hover:bg-ntsBlue100 transition text-center">Login</a>
+                    <a href="register.html" class="block w-full bg-ntsYellow text-ntsBlue font-semibold px-4 py-3 rounded-lg hover:bg-yellow-400 transition text-center">Register</a>
+                </div>
 
                 <!-- Mobile Profile Menu (shown when logged in) -->
                 <div id="mobileProfileMenu" class="border-t border-gray-200 pt-3 mt-3 hidden">
@@ -1730,6 +1735,10 @@
             
             // Show mobile profile menu when logged in
             mobileProfileMenu && mobileProfileMenu.classList.remove('hidden');
+            
+            // Hide mobile auth buttons when logged in
+            const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+            mobileAuthButtons && mobileAuthButtons.classList.add('hidden');
           } else {
             // User is not logged in - show auth buttons on desktop only and hide profile menu
             if (authButtons) {
@@ -1739,6 +1748,10 @@
             
             // Hide mobile profile menu when not logged in
             mobileProfileMenu && mobileProfileMenu.classList.add('hidden');
+            
+            // Show mobile auth buttons when not logged in
+            const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+            mobileAuthButtons && mobileAuthButtons.classList.remove('hidden');
           }
 
           // Toggle dropdown
