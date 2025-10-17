@@ -300,6 +300,11 @@
             white-space: nowrap;
             animation: typewriter 3s steps(40, end);
         }
+
+        /* Ensure hidden class overrides responsive display classes */
+        .auth-buttons.hidden {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -362,8 +367,8 @@
                         class="text-ntsWhite hover:text-ntsBlue100 px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-ntsBlue300">Contact</a>
                 </div>
 
-                <!-- Auth Area (hidden on mobile, shown on desktop) -->
-                <div id="authButtons" class="hidden md:flex items-center gap-2">
+                <!-- Auth Area (hidden on mobile, shown on desktop when not logged in) -->
+                <div id="authButtons" class="auth-buttons hidden md:flex items-center gap-2">
                     <a href="login.html" class="bg-white text-ntsBlue font-semibold px-4 py-2 rounded hover:bg-ntsBlue100 transition">Login</a>
                     <a href="register.html" class="bg-ntsYellow text-ntsBlue font-semibold px-4 py-2 rounded hover:bg-yellow-400 transition">Register</a>
                 </div>
