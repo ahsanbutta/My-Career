@@ -368,7 +368,7 @@
                 </div>
 
                 <!-- Auth Area (hidden on mobile, shown on desktop when not logged in) -->
-                <div id="authButtons" class="auth-buttons hidden md:hidden items-center gap-2">
+                <div id="authButtons" class="auth-buttons hidden md:flex items-center gap-2">
                     <a href="login.html" class="bg-white text-ntsBlue font-semibold px-4 py-2 rounded hover:bg-ntsBlue100 transition">Login</a>
                     <a href="register.html" class="bg-ntsYellow text-ntsBlue font-semibold px-4 py-2 rounded hover:bg-yellow-400 transition">Register</a>
                 </div>
@@ -1741,8 +1741,6 @@
             // User is not logged in - show auth buttons on desktop only and hide profile menu
             if (authButtons) {
               authButtons.classList.remove('hidden');
-              authButtons.classList.add('md:flex');
-              authButtons.classList.remove('md:hidden');
             }
             profileMenu && profileMenu.classList.add('hidden');
             
