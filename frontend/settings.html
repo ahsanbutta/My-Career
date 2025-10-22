@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Settings — MyCareer</title>
   <style>
-    :root{
+    :root {
       --bg:#f6f7fb; --card:#ffffff; --muted:#6b7280; --accent:#2563eb;
       --success:#16a34a; --danger:#dc2626; --radius:12px; --glass: rgba(15,23,42,0.03);
-      --maxWidth:1100px;
-      --shadow: 0 10px 30px rgba(2,6,23,0.08);
-      --gap:18px;
+      --maxWidth:1100px; --shadow: 0 10px 30px rgba(2,6,23,0.08); --gap:18px;
     }
     *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
     body{margin:0;background:var(--bg);color:#0f172a;padding:28px;display:flex;justify-content:center;}
@@ -18,7 +16,6 @@
     .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;}
     .topbar a{color:var(--accent);text-decoration:none;font-weight:700;}
     .layout{display:grid;grid-template-columns:260px 1fr;gap:20px;}
-    /* Sidebar */
     .sidebar{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;border:1px solid #e6eefc;}
     .profile-box{padding:18px;display:flex;flex-direction:column;align-items:center;gap:12px;border-bottom:1px solid #f1f5f9;}
     .avatar{width:88px;height:88px;border-radius:999px;background:#eef2ff;border:4px solid #e6eefc;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:#1e3a8a;overflow:hidden;}
@@ -29,38 +26,25 @@
     .nav-btn{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:10px;border:1px solid transparent;background:transparent;margin:8px 8px;color:#0f172a;font-weight:700;cursor:pointer;}
     .nav-btn:hover{background:#f8fafc;}
     .nav-btn.active{background:#eef2ff;color:#1e3a8a;border-color:#dbeafe;}
-    .sidebar-foot{padding:12px;display:flex;flex-direction:column;gap:8px;border-top:1px solid #f1f5f9;}
+    .sidebar-foot{padding:12px;display:flex;justify-content:center;}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:10px;border:1px solid transparent;cursor:pointer;font-weight:700;}
     .btn.primary{background:var(--accent);color:#fff;}
     .btn.ghost{background:transparent;border-color:#e6eefc;color:#0f172a;}
-    .btn.warn{background:var(--danger);color:#fff;}
-    .btn.ghost.small{padding:8px 10px;border-radius:8px;font-weight:600;}
-    /* Content */
     .content{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;border:1px solid #e6eefc;}
     .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
     .header h1{font-size:20px;margin:0;}
-    .sections{display:block;}
     .section{display:none;}
     .section.active{display:block;}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
     .field{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
     label{font-size:13px;color:#0f172a;font-weight:700;}
-    input[type="text"], input[type="email"], input[type="tel"], input[type="password"], textarea, select{
+    input, textarea, select{
       padding:12px 14px;border-radius:10px;border:1px solid #e6eefc;background:#fff;outline:none;font-size:14px;
     }
     textarea{min-height:100px;resize:vertical;}
-    .muted{color:var(--muted);font-size:13px;}
-    .row{display:flex;gap:10px;}
+    .muted{color:var(--muted);font-size:13px; padding-left: 25px;}
     .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px;}
-    .small{font-size:13px;padding:8px 10px;border-radius:8px;}
-    .counter{font-size:12px;color:var(--muted);text-align:right;}
-    .danger-text{color:var(--danger);font-weight:700;}
-    .split{display:flex;gap:12px;flex-wrap:wrap;}
-    .avatar-edit{display:flex;flex-direction:column;gap:8px;align-items:center;}
-    .upload-hint{font-size:12px;color:var(--muted);}
-    .hr{height:1px;background:#f1f5f9;margin:12px 0;border-radius:2px;}
-    /* responsive */
-    @media (max-width:980px){ .layout{grid-template-columns:1fr; } .grid{grid-template-columns:1fr;} .sidebar{order:2} .content{order:1} }
+    @media (max-width:980px){ .layout{grid-template-columns:1fr;} .grid{grid-template-columns:1fr;} .sidebar{order:2} .content{order:1} }
   </style>
 </head>
 <body>
@@ -72,16 +56,16 @@
 
     <div class="layout">
       <!-- SIDEBAR -->
-      <aside class="sidebar" aria-label="Settings sidebar">
+      <aside class="sidebar">
         <div class="profile-box">
-          <div id="sidebarAvatar" class="avatar" aria-hidden="true">U</div>
+          <div id="sidebarAvatar" class="avatar">U</div>
           <div style="text-align:center">
             <div id="sidebarName" class="user-name">User</div>
             <div id="sidebarEmail" class="user-email">email@example.com</div>
           </div>
         </div>
 
-        <nav class="sidebar-nav" role="navigation" aria-label="Settings sections">
+        <nav class="sidebar-nav">
           <button class="nav-btn active" data-target="account">Account</button>
           <button class="nav-btn" data-target="profile">Profile</button>
           <button class="nav-btn" data-target="security">Security</button>
@@ -89,201 +73,164 @@
 
         <div class="sidebar-foot">
           <button id="saveAllBtn" class="btn primary">Save All</button>
-          <div style="display:flex;gap:8px;justify-content:space-between;align-items:center">
-            <button id="deleteAccount" class="btn warn small">Delete account</button>
-            <button id="exportData" class="btn ghost small">Export data</button>
-          </div>
         </div>
       </aside>
 
       <!-- CONTENT -->
-      <main class="content" role="main">
+      <main class="content">
         <div class="header">
           <h1>Settings</h1>
           <div class="muted">Manage your account, profile and security settings</div>
         </div>
 
-        <div class="sections">
-          <!-- ACCOUNT -->
-          <section id="account" class="section active" aria-labelledby="account">
-            <h3 style="margin-top:0">Account</h3>
-            <div class="grid">
-              <div>
-                <div class="field">
-                  <label for="accName">Full name</label>
-                  <input id="accName" type="text" placeholder="Your full name" />
-                  <div class="counter" id="nameCount">0 / 80</div>
-                  <button type="button" id="testNameBtn" style="margin-top:5px;padding:5px;background:#007bff;color:white;border:none;border-radius:4px;">Test: Load Name</button>
-                </div>
-
-                <div class="field">
-                  <label for="accEmail">Email</label>
-                  <input id="accEmail" type="email" placeholder="you@example.com" />
-                </div>
-
-                <div class="field">
-                  <label for="accPhone">Phone</label>
-                  <input id="accPhone" type="tel" placeholder="+92 300 1234567" />
-                </div>
+        <section id="account" class="section active">
+          <h3>Account</h3>
+          <div class="grid">
+            <div>
+              <div class="field">
+                <label for="accName">Full name</label>
+                <input id="accName" type="text" placeholder="Your full name" />
+                <div class="counter" id="nameCount">0 / 80</div>
               </div>
 
-              <div>
-                <div class="field">
-                  <label>Avatar</label>
-                  <div class="avatar-edit">
-                    <div id="accAvatar" class="avatar" aria-hidden="true">U</div>
-                    <div style="display:flex;gap:8px">
-                      <input id="avatarInput" type="file" accept="image/*" style="display:none" />
-                      <button id="changeAvatar" class="btn ghost small">Change</button>
-                      <button id="removeAvatar" class="btn ghost small">Remove</button>
-                    </div>
-                    <div class="upload-hint">PNG/JPG — recommended 200×200</div>
+              <div class="field">
+                <label for="accEmail">Email</label>
+                <input id="accEmail" type="email" placeholder="you@example.com" />
+              </div>
+
+              <div class="field">
+                <label for="accPhone">Phone</label>
+                <input id="accPhone" type="tel" placeholder="+92 300 1234567" />
+              </div>
+            </div>
+
+            <div>
+              <div class="field">
+                <label>Avatar</label>
+                <div class="avatar-edit">
+                  <div id="accAvatar" class="avatar">U</div>
+                  <div style="display:flex;gap:8px">
+                    <input id="avatarInput" type="file" accept="image/*" style="display:none" />
+                    <button id="changeAvatar" class="btn ghost small">Change</button>
+                    <button id="removeAvatar" class="btn ghost small">Remove</button>
                   </div>
                 </div>
-
-                <div class="hr"></div>
-
-                <div class="field">
-                  <label for="roleSelect">Role</label>
-                  <select id="roleSelect">
-                    <option value="">Select role</option>
-                    <option>Student</option>
-                    <option>Developer</option>
-                    <option>Designer</option>
-                    <option>Hiring Manager</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="actions">
-              <button id="saveAccount" class="btn primary">Save account</button>
-              <button id="cancelAccount" class="btn ghost">Cancel</button>
-            </div>
-          </section>
-
-          <!-- PROFILE -->
-          <section id="profile" class="section" aria-labelledby="profile">
-            <h3 style="margin-top:0">Profile</h3>
-            <div class="grid">
-              <div>
-                <div class="field">
-                  <label for="bio">Bio / Tagline</label>
-                  <textarea id="bio" placeholder="Describe yourself in a sentence..."></textarea>
-                  <div class="counter" id="bioCount">0 / 160</div>
-                </div>
-
-                <div class="field">
-                  <label for="pronouns">Pronouns</label>
-                  <input id="pronouns" type="text" placeholder="e.g. he/him" />
-                </div>
-
-                <div class="field">
-                  <label for="occupation">Occupation</label>
-                  <input id="occupation" type="text" placeholder="e.g. Student, Software Engineer" />
-                </div>
-              </div>
-
-              <div>
-                <div class="field">
-                  <label for="organization">Organization</label>
-                  <input id="organization" type="text" placeholder="Company / University" />
-                </div>
-
-                <div class="field">
-                  <label for="location">Location</label>
-                  <input id="location" type="text" placeholder="City, Country" />
-                </div>
-
-                <div class="field">
-                  <label for="website">Website / Portfolio</label>
-                  <input id="website" type="text" placeholder="https://your.site" />
-                </div>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button id="saveProfile" class="btn primary">Save profile</button>
-              <button id="cancelProfile" class="btn ghost">Cancel</button>
-            </div>
-          </section>
-
-          <!-- SECURITY -->
-          <section id="security" class="section" aria-labelledby="security">
-            <h3 style="margin-top:0">Security</h3>
-
-            <div style="max-width:720px">
-              <div class="field">
-                <label for="curPwd">Current password</label>
-                <input id="curPwd" type="password" placeholder="Current password" />
-              </div>
-
-              <div class="row">
-                <div class="field" style="flex:1">
-                  <label for="newPwd">New password</label>
-                  <input id="newPwd" type="password" placeholder="New password (min 6 char)" />
-                </div>
-                <div class="field" style="flex:1">
-                  <label for="newPwd2">Confirm new password</label>
-                  <input id="newPwd2" type="password" placeholder="Confirm new password" />
-                </div>
               </div>
 
               <div class="field">
-                <label for="recoveryEmail">Recovery email (optional)</label>
-                <input id="recoveryEmail" type="email" placeholder="recovery@example.com" />
-                <div class="muted">Used only to recover your account if you lose access.</div>
-              </div>
-
-              <div style="margin-top:8px" class="actions">
-                <button id="changePassword" class="btn primary">Change password</button>
-                <button id="cancelSecurity" class="btn ghost">Cancel</button>
+                <label for="roleSelect">Role</label>
+                <select id="roleSelect">
+                  <option value="">Select role</option>
+                  <option>Student</option>
+                  <option>Developer</option>
+                  <option>Designer</option>
+                  <option>Hiring Manager</option>
+                  <option>Other</option>
+                </select>
               </div>
             </div>
-          </section>
-        </div>
+          </div>
+
+          <div class="actions">
+            <button id="saveAccount" class="btn primary">Save account</button>
+            <button id="cancelAccount" class="btn ghost">Cancel</button>
+          </div>
+        </section>
+
+        <!-- PROFILE -->
+        <section id="profile" class="section">
+          <h3>Profile</h3>
+          <div class="grid">
+            <div>
+              <div class="field">
+                <label for="bio">Bio / Tagline</label>
+                <textarea id="bio" placeholder="Describe yourself in a sentence..."></textarea>
+                <div class="counter" id="bioCount">0 / 160</div>
+              </div>
+
+              <div class="field">
+                <label for="pronouns">Pronouns</label>
+                <input id="pronouns" type="text" placeholder="e.g. he/him" />
+              </div>
+
+              <div class="field">
+                <label for="occupation">Occupation</label>
+                <input id="occupation" type="text" placeholder="e.g. Student, Software Engineer" />
+              </div>
+            </div>
+
+            <div>
+              <div class="field">
+                <label for="organization">Organization</label>
+                <input id="organization" type="text" placeholder="Company / University" />
+              </div>
+
+              <div class="field">
+                <label for="location">Location</label>
+                <input id="location" type="text" placeholder="City, Country" />
+              </div>
+
+              <div class="field">
+                <label for="website">Website / Portfolio</label>
+                <input id="website" type="text" placeholder="https://your.site" />
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="saveProfile" class="btn primary">Save profile</button>
+            <button id="cancelProfile" class="btn ghost">Cancel</button>
+          </div>
+        </section>
+
+        <!-- SECURITY -->
+        <section id="security" class="section">
+          <h3>Security</h3>
+          <div class="field">
+            <label for="curPwd">Current password</label>
+            <input id="curPwd" type="password" placeholder="Current password" />
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label for="newPwd">New password</label>
+              <input id="newPwd" type="password" placeholder="New password (min 6 char)" />
+            </div>
+            <div class="field">
+              <label for="newPwd2">Confirm new password</label>
+              <input id="newPwd2" type="password" placeholder="Confirm new password" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="recoveryEmail">Recovery email (optional)</label>
+            <input id="recoveryEmail" type="email" placeholder="recovery@example.com" />
+          </div>
+
+          <div class="actions">
+            <button id="changePassword" class="btn primary">Change password</button>
+            <button id="cancelSecurity" class="btn ghost">Cancel</button>
+          </div>
+        </section>
       </main>
     </div>
   </div>
 
   <script type="module">
-    // Import Firebase functions from CDN
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-    import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
-    import { 
-      getFirestore, 
-      collection, 
-      getDocs, 
-      query, 
-      where,
-      updateDoc,
-      doc,
-      setDoc
-    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBAj2SLWwMSBDB4jl0VLjVhea9W6FkhXF0",
       authDomain: "my-career-project-a1885.firebaseapp.com",
       projectId: "my-career-project-a1885",
       storageBucket: "my-career-project-a1885.firebasestorage.app",
       messagingSenderId: "1006665032949",
-      appId: "1:1006665032949:web:175f91f2559139cda8d1bc",
-      measurementId: "G-V34ZR2C9PV"
+      appId: "1:1006665032949:web:175f91f2559139cda8d1bc"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    
-    // Initialize Analytics
-    isSupported().then((supported) => {
-      if (supported) {
-        const analytics = getAnalytics(app);
-      }
-    });
 
     const qs = s => document.querySelector(s);
     const qsa = s => document.querySelectorAll(s);
@@ -292,380 +239,115 @@
     function setCurrentEmail(e){ localStorage.setItem('currentUserEmail', e); }
     function isLoggedIn(){ return localStorage.getItem('loggedIn') === 'true' && !!getCurrentEmail(); }
 
-    // Session guard
     if(!isLoggedIn()){ alert('Please login/register first.'); window.location.href = 'login.html'; }
 
-    // Global variables to store user data and document ID
     let currentUserData = {};
     let currentUserDocId = null;
 
-    // Elements
     const navBtns = Array.from(qsa('.nav-btn'));
     const sections = Array.from(qsa('.section'));
-    const sidebarAvatar = qs('#sidebarAvatar');
-    const accAvatar = qs('#accAvatar');
-    const avatarInput = qs('#avatarInput');
 
-    // Navigation
     navBtns.forEach(btn => btn.addEventListener('click', ()=>{
       navBtns.forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      const target = btn.dataset.target;
-      sections.forEach(s => s.classList.remove('active'));
-      qs('#'+target).classList.add('active');
-      window.scrollTo({top:0,behavior:'smooth'});
+      sections.forEach(s=>s.classList.remove('active'));
+      qs('#'+btn.dataset.target).classList.add('active');
     }));
 
-    // Counters binding
-    function bindCount(inputId, countId, max){
+    function bindCount(inputId,countId,max){
       const el = qs('#'+inputId);
       const counter = qs('#'+countId);
-      const update = ()=> { const v = el.value || ''; counter.textContent = `${v.length} / ${max}`; };
-      el.addEventListener('input', update); update();
+      const update=()=>{const v=el.value||'';counter.textContent=`${v.length} / ${max}`;};
+      el.addEventListener('input',update);update();
     }
     bindCount('accName','nameCount',80);
     bindCount('bio','bioCount',160);
 
-    // Load user data from Firestore into UI
     async function loadUI(){
       const email = getCurrentEmail();
-      
-      try {
-        // Query Firestore for user data
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("email", "==", email));
-        const querySnapshot = await getDocs(q);
-
-        let u = {}; // fallback
-        
-        if (!querySnapshot.empty) {
-          querySnapshot.forEach((doc) => {
-            u = doc.data();
-            currentUserData = u;
-            currentUserDocId = doc.id; // Store document ID for updates
+      try{
+        const qSnap = await getDocs(query(collection(db,"users"),where("email","==",email)));
+        if(!qSnap.empty){
+          qSnap.forEach(docSnap=>{
+            currentUserData = docSnap.data();
+            currentUserDocId = docSnap.id;
           });
-          console.log("User settings loaded from Firestore:", u);
-        } else {
-          console.log("No user found in Firestore, using fallback");
         }
-
-        // Populate form fields with Firestore data
-        console.log("Populating fields with user data:", u);
-        console.log("User name from Firestore:", u.name);
-        
-        const nameField = qs('#accName');
-        console.log("Name field element:", nameField);
-        
-        if (nameField) {
-          nameField.value = u.name || '';
-          console.log("Set name field value to:", nameField.value);
-        }
-        
-        qs('#accEmail').value = u.email || email || '';
-        qs('#accPhone').value = u.phone || '';
-        qs('#roleSelect').value = u.role || '';
-        qs('#bio').value = u.bio || '';
-        qs('#pronouns').value = u.pronouns || '';
-        qs('#occupation').value = u.occupation || '';
-        qs('#organization').value = u.organization || '';
-        qs('#location').value = u.location || '';
-        qs('#website').value = u.website || '';
-        qs('#recoveryEmail').value = u.recoveryEmail || '';
-        
-        // Update sidebar info
-        qs('#sidebarName').textContent = u.name || email || 'User';
-        qs('#sidebarEmail').textContent = u.email || email;
-        
-        // Force update name field after a short delay (debugging)
-        setTimeout(() => {
-          const nameFieldCheck = qs('#accName');
-          if (nameFieldCheck && u.name) {
-            nameFieldCheck.value = u.name;
-            console.log("Force updated name field after delay:", nameFieldCheck.value);
-          }
-        }, 500);
-      // avatar
-      if(u.photo){
-        const img = new Image();
-        img.src = u.photo;
-        img.style.width = '100%'; img.style.height = '100%'; img.style.borderRadius='999px';
-        sidebarAvatar.innerHTML=''; sidebarAvatar.appendChild(img);
-        accAvatar.innerHTML=''; const img2 = new Image(); img2.src=u.photo; img2.style.width='100%'; img2.style.height='100%'; img2.style.borderRadius='999px'; accAvatar.appendChild(img2);
-      } else {
-        sidebarAvatar.innerHTML = (u.name?.trim()?.[0] || 'U').toUpperCase();
-        accAvatar.innerHTML = (u.name?.trim()?.[0] || 'U').toUpperCase();
-      }
-      
-      } catch (error) {
-        console.error("Error loading user settings from Firestore:", error);
-        // Fallback display
-        qs('#sidebarName').textContent = email || 'User';
-        qs('#sidebarEmail').textContent = email || '';
-        sidebarAvatar.innerHTML = 'U';
-        accAvatar.innerHTML = 'U';
-      }
+        qs('#accName').value = currentUserData.name || '';
+        qs('#accEmail').value = currentUserData.email || email;
+        qs('#accPhone').value = currentUserData.phone || '';
+        qs('#roleSelect').value = currentUserData.role || '';
+        qs('#bio').value = currentUserData.bio || '';
+        qs('#pronouns').value = currentUserData.pronouns || '';
+        qs('#occupation').value = currentUserData.occupation || '';
+        qs('#organization').value = currentUserData.organization || '';
+        qs('#location').value = currentUserData.location || '';
+        qs('#website').value = currentUserData.website || '';
+        qs('#recoveryEmail').value = currentUserData.recoveryEmail || '';
+        qs('#sidebarName').textContent = currentUserData.name || 'User';
+        qs('#sidebarEmail').textContent = currentUserData.email || email;
+      }catch(err){console.error(err);}
     }
 
-    // Avatar change with Firestore
-    qs('#changeAvatar').addEventListener('click', ()=> avatarInput.click());
-    avatarInput.addEventListener('change', (e)=>{
-      const f = e.target.files?.[0]; if(!f) return;
-      const reader = new FileReader();
-      reader.onload = async ()=> {
-        try {
-          const imgData = reader.result;
-          if (currentUserDocId) {
-            const userDocRef = doc(db, "users", currentUserDocId);
-            await updateDoc(userDocRef, { photo: imgData });
-            loadUI();
-          }
-        } catch (error) {
-          console.error("Error updating avatar:", error);
-          alert('Failed to update avatar. Please try again.');
-        }
-      };
-      reader.readAsDataURL(f);
-      e.target.value = '';
-    });
-    qs('#removeAvatar').addEventListener('click', async ()=>{
-      if(!confirm('Remove avatar?')) return;
-      try {
-        if (currentUserDocId) {
-          const userDocRef = doc(db, "users", currentUserDocId);
-          await updateDoc(userDocRef, { photo: null });
-          loadUI();
-        }
-      } catch (error) {
-        console.error("Error removing avatar:", error);
-        alert('Failed to remove avatar. Please try again.');
-      }
+    qs('#signOutTop').addEventListener('click',e=>{
+      e.preventDefault();
+      localStorage.setItem('loggedIn','false');
+      localStorage.removeItem('currentUserEmail');
+      alert('Signed out.');
+      window.location.href='index.html';
     });
 
-    // Save account
-    qs('#saveAccount').addEventListener('click', saveAccount);
-    qs('#saveProfile').addEventListener('click', saveProfile);
-    qs('#changePassword').addEventListener('click', changePassword);
-    qs('#saveAllBtn').addEventListener('click', async ()=>{
-      try {
-        await saveAccount(); 
-        await saveProfile(); 
-        alert('All changes saved successfully!');
-      } catch (error) {
-        console.error("Error saving all changes:", error);
-        alert('Some changes failed to save. Please try again.');
-      }
-    });
-
-    // Cancel buttons reload original
-    const cancelAccountBtn = qs('#cancelAccount');
-    const cancelProfileBtn = qs('#cancelProfile');
-    const cancelSecurityBtn = qs('#cancelSecurity');
-    
-    if (cancelAccountBtn) {
-      cancelAccountBtn.addEventListener('click', () => {
-        console.log("Cancel Account clicked");
-        loadUI();
-      });
-    }
-    
-    if (cancelProfileBtn) {
-      cancelProfileBtn.addEventListener('click', () => {
-        console.log("Cancel Profile clicked");
-        loadUI();
-      });
-    }
-    
-    if (cancelSecurityBtn) {
-      cancelSecurityBtn.addEventListener('click', () => {
-        console.log("Cancel Security clicked");
-        qs('#curPwd').value = '';
-        qs('#newPwd').value = '';
-        qs('#newPwd2').value = '';
-      });
-    }
-
-    // Delete account with Firestore
-    qs('#deleteAccount').addEventListener('click', async ()=>{
-      if(!confirm('This will permanently delete your account and associated applications. Proceed?')) return;
-      
-      try {
-        if (currentUserDocId) {
-          // Delete user from Firestore
-          const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js");
-          const userDocRef = doc(db, "users", currentUserDocId);
-          await deleteDoc(userDocRef);
-          
-          // Clear localStorage
-          localStorage.setItem('loggedIn','false'); 
-          localStorage.removeItem('currentUserEmail');
-          localStorage.removeItem('currentUserId');
-          
-          alert('Account deleted successfully.');
-          window.location.href = 'index.html';
-        }
-      } catch (error) {
-        console.error("Error deleting account:", error);
-        alert('Failed to delete account. Please try again.');
-      }
-    });
-
-    // Export data (download user JSON from Firestore)
-    qs('#exportData').addEventListener('click', ()=>{
-      const u = currentUserData || {};
-      const blob = new Blob([JSON.stringify(u, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = `${getCurrentEmail() || 'user'}-data.json`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-
-    // Sign out
-    qs('#signOutTop').addEventListener('click', (e)=>{ e.preventDefault(); localStorage.setItem('loggedIn','false'); localStorage.removeItem('currentUserEmail'); alert('Signed out.'); window.location.href='index.html'; });
-
-    // Save account logic with Firestore
     async function saveAccount(){
-      const oldEmail = getCurrentEmail();
       const name = qs('#accName').value.trim();
-      const email = qs('#accEmail').value.trim().toLowerCase();
+      const email = qs('#accEmail').value.trim();
       const phone = qs('#accPhone').value.trim();
-      const role = qs('#roleSelect').value || '';
-      
-      if(!name || !email){ alert('Name and email are required.'); return; }
-      if(!/^\S+@\S+\.\S+$/.test(email)){ alert('Enter a valid email.'); return; }
-
-      try {
-        // Check if email changed and if new email already exists
-        if(email !== oldEmail) {
-          const usersRef = collection(db, "users");
-          const q = query(usersRef, where("email", "==", email));
-          const querySnapshot = await getDocs(q);
-          
-          if (!querySnapshot.empty) {
-            alert('Another account exists with that email. Choose a different email.');
-            return;
-          }
-        }
-
-        // Update user data in Firestore
-        if (currentUserDocId) {
-          const userDocRef = doc(db, "users", currentUserDocId);
-          const updatedData = {
-            name: name,
-            email: email,
-            phone: phone,
-            role: role,
-            // Keep existing data
-            password: currentUserData.password || '',
-            photo: currentUserData.photo || null,
-            bio: currentUserData.bio || '',
-            pronouns: currentUserData.pronouns || '',
-            occupation: currentUserData.occupation || '',
-            organization: currentUserData.organization || '',
-            location: currentUserData.location || '',
-            website: currentUserData.website || '',
-            recoveryEmail: currentUserData.recoveryEmail || ''
-          };
-
-          await updateDoc(userDocRef, updatedData);
-          
-          // Update localStorage if email changed
-          if(email !== oldEmail) {
-            setCurrentEmail(email);
-          }
-          
-          alert('Account updated successfully!');
-          loadUI();
-        }
-      } catch (error) {
-        console.error("Error updating account:", error);
-        alert('Failed to update account. Please try again.');
+      const role = qs('#roleSelect').value;
+      if(!name||!email){alert('Name and Email required');return;}
+      if(currentUserDocId){
+        await updateDoc(doc(db,'users',currentUserDocId),{name,email,phone,role});
+        setCurrentEmail(email);
+        alert('Account updated!');
+        loadUI();
       }
     }
 
-    // Save profile with Firestore
     async function saveProfile(){
-      try {
-        if (currentUserDocId) {
-          const userDocRef = doc(db, "users", currentUserDocId);
-          const profileData = {
-            bio: qs('#bio').value.trim(),
-            pronouns: qs('#pronouns').value.trim(),
-            occupation: qs('#occupation').value.trim(),
-            organization: qs('#organization').value.trim(),
-            location: qs('#location').value.trim(),
-            website: qs('#website').value.trim(),
-            recoveryEmail: qs('#recoveryEmail').value.trim()
-          };
-
-          await updateDoc(userDocRef, profileData);
-          alert('Profile saved successfully!');
-          loadUI();
-        }
-      } catch (error) {
-        console.error("Error saving profile:", error);
-        alert('Failed to save profile. Please try again.');
+      if(currentUserDocId){
+        await updateDoc(doc(db,'users',currentUserDocId),{
+          bio:qs('#bio').value.trim(),
+          pronouns:qs('#pronouns').value.trim(),
+          occupation:qs('#occupation').value.trim(),
+          organization:qs('#organization').value.trim(),
+          location:qs('#location').value.trim(),
+          website:qs('#website').value.trim(),
+          recoveryEmail:qs('#recoveryEmail').value.trim()
+        });
+        alert('Profile updated!');
+        loadUI();
       }
     }
 
-    // Change password with Firestore
     async function changePassword(){
-      const cur = qs('#curPwd').value;
-      const np = qs('#newPwd').value;
-      const np2 = qs('#newPwd2').value;
-      
-      if(!np || !np2){ alert('Enter new password and confirm it.'); return; }
-      if(np.length < 6){ alert('New password must be at least 6 characters.'); return; }
-      if(np !== np2){ alert('New passwords do not match.'); return; }
-      
-      try {
-        // If user has a password set, require current
-        if(currentUserData.password && cur !== currentUserData.password){ 
-          alert('Current password is incorrect.'); 
-          return; 
-        }
-        
-        if (currentUserDocId) {
-          const userDocRef = doc(db, "users", currentUserDocId);
-          await updateDoc(userDocRef, { password: np });
-          
-          qs('#curPwd').value = qs('#newPwd').value = qs('#newPwd2').value = '';
-          alert('Password changed successfully.');
-        }
-      } catch (error) {
-        console.error("Error changing password:", error);
-        alert('Failed to change password. Please try again.');
-      }
+      const np=qs('#newPwd').value;
+      const np2=qs('#newPwd2').value;
+      const cur=qs('#curPwd').value;
+      if(np!==np2){alert('Passwords do not match');return;}
+      if(np.length<6){alert('Password too short');return;}
+      if(currentUserData.password && cur!==currentUserData.password){alert('Wrong current password');return;}
+      await updateDoc(doc(db,'users',currentUserDocId),{password:np});
+      alert('Password changed!');
+      qs('#curPwd').value=qs('#newPwd').value=qs('#newPwd2').value='';
     }
 
-    // Test button for debugging
-    qs('#testNameBtn').addEventListener('click', () => {
-      console.log("Test button clicked");
-      console.log("Current user data:", currentUserData);
-      const nameField = qs('#accName');
-      console.log("Name field:", nameField);
-      
-      if (currentUserData && currentUserData.name) {
-        nameField.value = currentUserData.name;
-        console.log("Manually set name to:", nameField.value);
-        alert(`Name set to: ${currentUserData.name}`);
-      } else {
-        alert("No user data found. Check console for details.");
-      }
-    });
+    qs('#saveAccount').onclick=saveAccount;
+    qs('#saveProfile').onclick=saveProfile;
+    qs('#changePassword').onclick=changePassword;
+    qs('#cancelAccount').onclick=loadUI;
+    qs('#cancelProfile').onclick=loadUI;
+    qs('#cancelSecurity').onclick=()=>{qs('#curPwd').value=qs('#newPwd').value=qs('#newPwd2').value='';};
+    qs('#saveAllBtn').onclick=async()=>{await saveAccount();await saveProfile();alert('All changes saved!');};
 
-    // Debug: Check if all buttons exist
-    console.log("Button check:");
-    console.log("cancelAccount:", qs('#cancelAccount'));
-    console.log("cancelProfile:", qs('#cancelProfile'));
-    console.log("cancelSecurity:", qs('#cancelSecurity'));
-    console.log("saveAccount:", qs('#saveAccount'));
-    console.log("saveProfile:", qs('#saveProfile'));
-    console.log("changePassword:", qs('#changePassword'));
-
-    // init
     loadUI();
-
-    // small UX: pressing Enter on some inputs triggers save for active section
-    qs('#accEmail').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); saveAccount(); }});
-    qs('#bio').addEventListener('keydown', (e)=>{ if(e.ctrlKey && e.key==='Enter'){ e.preventDefault(); saveProfile(); }});
   </script>
 </body>
 </html>

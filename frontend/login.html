@@ -221,6 +221,15 @@
     }
   });
 
+  // Check if user is already logged in
+  window.addEventListener('DOMContentLoaded', function() {
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+    if (isLoggedIn) {
+      alert('✅ You are already logged in!');
+      window.location.href = 'index.html';
+    }
+  });
+
 </script>
 </body>
 </html>

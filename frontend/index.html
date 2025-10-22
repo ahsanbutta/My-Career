@@ -284,6 +284,13 @@
             animation: glow 2s ease-in-out infinite;
         }
 
+        /* Force hide profile menu on mobile navigation bar */
+        @media (max-width: 768px) {
+            #profileMenu {
+                display: none !important;
+            }
+        }
+
         /* Alternative: Typewriter effect */
         @keyframes typewriter {
             from {
@@ -305,7 +312,7 @@
         .auth-buttons.hidden {
             display: none !important;
         }
-        
+
         /* Always hide auth buttons on mobile screens */
         @media (max-width: 767px) {
             .auth-buttons {
@@ -321,6 +328,7 @@
     <nav class="bg-ntsBlue shadow-lg sticky top-0 z-50 border-b border-ntsBlue700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
+
 
                 <!-- Logo -->
                 <div class="flex items-center">
@@ -374,41 +382,61 @@
                         class="text-ntsWhite hover:text-ntsBlue100 px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-ntsBlue300">Contact</a>
                 </div>
 
-                <!-- Auth Area (hidden on mobile, shown on desktop when not logged in) -->
+                <!-- Auth Area (shown when NOT logged in) -->
                 <div id="authButtons" class="auth-buttons hidden md:flex items-center gap-2">
-                    <a href="login.html" class="bg-white text-ntsBlue font-semibold px-4 py-2 rounded hover:bg-ntsBlue100 transition">Login</a>
-                    <a href="register.html" class="bg-ntsYellow text-ntsBlue font-semibold px-4 py-2 rounded hover:bg-yellow-400 transition">Register</a>
+                    <a href="login.html"
+                        class="bg-white text-ntsBlue font-semibold px-4 py-2 rounded hover:bg-ntsBlue100 transition">Login</a>
+                    <a href="register.html"
+                        class="bg-ntsYellow text-ntsBlue font-semibold px-4 py-2 rounded hover:bg-yellow-400 transition">Register</a>
+                    <!-- <button id="profileToggle"
+                        class="hidden md:flex items-center gap-2 text-ntsWhite hover:text-ntsBlue100">
+                        <span
+                            class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-ntsBlue300 text-white font-bold">U</span>
+                        <span id="profileName" class="font-semibold">User</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button> -->
                 </div>
 
-                <!-- Profile Menu (hidden until logged in) -->
+                <!-- Profile Menu (shown when logged in) - Desktop Only -->
                 <div id="profileMenu" class="relative hidden">
-                    <button id="profileToggle" class="flex items-center gap-2 text-ntsWhite hover:text-ntsBlue100">
-                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-ntsBlue300 text-white font-bold">U</span>
-                        <span id="profileName" class="font-semibold">User</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    <button id="profileToggle"
+                        class="hidden items-center gap-2 text-ntsWhite hover:text-ntsBlue100">
+                        <span
+                            class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-ntsBlue300 text-white font-bold">U</span>
+                        <span id="profileName" class="   font-semibold"></span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
                     </button>
-                    <div id="profileDropdown" class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-200 hidden">
-                        <div class="px-4 py-3 border-b border-gray-100 font-bold text-gray-800" id="dropdownHeader">Profile</div>
+                    <div id="profileDropdown"
+                        class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-200 hidden"
+                        style="transition: opacity 0.3s ease, transform 0.3s ease;">
+                        <div class="px-4 py-3 border-b border-gray-100 font-bold text-gray-800" id="dropdownHeader">
+                            Profile
+                        </div>
                         <div class="py-2">
                             <a href="work.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50">
                                 <span class="mr-3">📄</span> Your Work
                             </a>
-                            <a href="profile.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50">
-                                <span class="mr-3">👤</span> Your Profile
-                            </a>
-                        
                             <a href="settings.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50">
                                 <span class="mr-3">⚙️</span> Settings
                             </a>
-                            <button id="signOutBtn" class="w-full text-left flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50">
+                            <a href="admin.html" id="adminLink"
+                                class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hidden">
+                                <span class="mr-3">👨‍💼</span> Admin Dashboard
+                            </a>
+                            <button id="signOutBtn"
+                                class="w-full text-left flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50">
                                 <span class="mr-3">↪️</span> Sign Out
                             </button>
                         </div>
-                        <div class="px-4 py-2 border-t border-gray-100 text-gray-700 font-semibold">Your notifications</div>
+                        <div class="px-4 py-2 border-t border-gray-100 text-gray-700 font-semibold">Your notifications
+                        </div>
                         <div class="px-4 pb-4 text-sm text-gray-500">No notifications to display</div>
                     </div>
                 </div>
-
 
                 <div class="md:hidden">
                     <button onclick="toggleMobileMenu()" class="text-ntsWhite hover:text-ntsBlue100">
@@ -434,34 +462,45 @@
                     class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">Services</a>
                 <a href="#" onclick="showContact(); return false;"
                     class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">Contact</a>
-                
-                <!-- Mobile Auth Buttons (shown when not logged in) -->
+
+                <!-- Mobile Auth Buttons (shown when NOT logged in) -->
                 <div id="mobileAuthButtons" class="border-t border-gray-200 pt-3 mt-3 space-y-2">
-                    <a href="login.html" class="block w-full bg-white text-ntsBlue font-semibold px-4 py-3 rounded-lg border-2 border-ntsBlue hover:bg-ntsBlue100 transition text-center">Login</a>
-                    <a href="register.html" class="block w-full bg-ntsYellow text-ntsBlue font-semibold px-4 py-3 rounded-lg hover:bg-yellow-400 transition text-center">Register</a>
+                    <a href="login.html"
+                        class="block w-full bg-white text-ntsBlue font-semibold px-4 py-3 rounded-lg border-2 border-ntsBlue hover:bg-ntsBlue100 transition text-center">Login</a>
+                    <a href="register.html"
+                        class="block w-full bg-ntsYellow text-ntsBlue font-semibold px-4 py-3 rounded-lg hover:bg-yellow-400 transition text-center">Register</a>
                 </div>
 
                 <!-- Mobile Profile Menu (shown when logged in) -->
                 <div id="mobileProfileMenu" class="border-t border-gray-200 pt-3 mt-3 hidden">
-                    <div class="px-3 py-2 text-base font-medium text-gray-900 border-b border-gray-100 mb-2">
-                        <div class="flex items-center gap-2">
-                            <span id="mobileProfileAvatar" class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-ntsBlue300 text-white font-bold text-sm">U</span>
-                            <span id="mobileProfileName" class="font-semibold">User</span>
+                    <div class="px-3 py-3 bg-ntsBlue50 rounded-lg mb-2">
+                        <div class="flex items-center gap-3">
+                            <span id="mobileProfileAvatar"
+                                class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-ntsBlue300 text-white font-bold text-lg">U</span>
+                            <div>
+                                <div id="mobileProfileName" class="font-bold text-gray-900">User</div>
+                                <div id="mobileProfileEmail" class="text-sm text-gray-600">user@email.com</div>
+                            </div>
                         </div>
                     </div>
-                    <a href="work.html" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">
+                    <a href="work.html"
+                        class="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50 rounded-lg">
                         <span class="mr-3">📄</span> Your Work
                     </a>
-                    <a href="profile.html" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">
-                        <span class="mr-3">👤</span> Your Profile
-                    </a>
-                    <a href="settings.html" class="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">
+                    <a href="settings.html"
+                        class="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50 rounded-lg">
                         <span class="mr-3">⚙️</span> Settings
                     </a>
-                    <button id="mobileSignOutBtn" class="w-full text-left flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50">
+                    <a href="admin.html" id="mobileAdminLink"
+                        class="flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-ntsBlue hover:bg-gray-50 rounded-lg hidden">
+                        <span class="mr-3">👨‍💼</span> Admin Dashboard
+                    </a>
+                    <button id="mobileSignOutBtn"
+                        class="w-full text-left flex items-center px-3 py-2 text-base font-medium text-red-600 hover:bg-red-50 rounded-lg font-semibold">
                         <span class="mr-3">↪️</span> Sign Out
                     </button>
                 </div>
+
             </div>
         </div>
     </nav>
@@ -1545,246 +1584,296 @@
     </footer>
 
     <script src="data-api.js"></script>
-    
+
     <!-- Firebase Integration -->
     <script type="module">
-      // Import Firebase functions from CDN
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-      import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
-      import { 
-        getFirestore, 
-        collection, 
-        addDoc, 
-        getDocs, 
-        onSnapshot,
-        serverTimestamp,
-        orderBy,
-        query,
-        where,
-        limit
-      } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+        // Import Firebase functions from CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            getDocs,
+            onSnapshot,
+            serverTimestamp,
+            orderBy,
+            query,
+            where,
+            limit
+        } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-      // Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyBAj2SLWwMSBDB4jl0VLjVhea9W6FkhXF0",
-        authDomain: "my-career-project-a1885.firebaseapp.com",
-        projectId: "my-career-project-a1885",
-        storageBucket: "my-career-project-a1885.firebasestorage.app",
-        messagingSenderId: "1006665032949",
-        appId: "1:1006665032949:web:175f91f2559139cda8d1bc",
-        measurementId: "G-V34ZR2C9PV"
-      };
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBAj2SLWwMSBDB4jl0VLjVhea9W6FkhXF0",
+            authDomain: "my-career-project-a1885.firebaseapp.com",
+            projectId: "my-career-project-a1885",
+            storageBucket: "my-career-project-a1885.firebasestorage.app",
+            messagingSenderId: "1006665032949",
+            appId: "1:1006665032949:web:175f91f2559139cda8d1bc",
+            measurementId: "G-V34ZR2C9PV"
+        };
 
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      
-      // Initialize Analytics
-      isSupported().then((supported) => {
-        if (supported) {
-          const analytics = getAnalytics(app);
-        }
-      });
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-      // Make Firebase available globally for other scripts
-      window.firebaseApp = app;
-      window.firebaseDb = db;
-      
-      // Firebase database functions
-      window.firebaseFunctions = {
-        // Add job application to Firestore
-        async addApplication(applicationData) {
-          try {
-            const docRef = await addDoc(collection(db, "applications"), {
-              ...applicationData,
-              appliedDate: serverTimestamp(),
-              status: "pending"
-            });
-            console.log("Application added with ID: ", docRef.id);
-            return docRef.id;
-          } catch (error) {
-            console.error("Error adding application: ", error);
-            throw error;
-          }
-        },
-
-        // Load jobs from Firestore (fallback to hardcoded if empty)
-        async loadJobs() {
-          try {
-            const jobsSnapshot = await getDocs(collection(db, "jobs"));
-            if (!jobsSnapshot.empty) {
-              const jobs = [];
-              jobsSnapshot.forEach((doc) => {
-                jobs.push({ id: doc.id, ...doc.data() });
-              });
-              return jobs;
-            } else {
-              // If no jobs in Firestore, use hardcoded jobs and optionally seed database
-              console.log("No jobs found in Firestore, using hardcoded jobs");
-              return null; // Let script.js handle hardcoded jobs
+        // Initialize Analytics
+        isSupported().then((supported) => {
+            if (supported) {
+                const analytics = getAnalytics(app);
             }
-          } catch (error) {
-            console.error("Error loading jobs from Firestore: ", error);
-            return null; // Fallback to hardcoded jobs
-          }
-        },
+        });
 
-        // Get applications for current user
-        async getUserApplications(userEmail) {
-          try {
-            const applicationsSnapshot = await getDocs(
-              query(collection(db, "applications"), where("applicantEmail", "==", userEmail))
-            );
-            const applications = [];
-            applicationsSnapshot.forEach((doc) => {
-              applications.push({ id: doc.id, ...doc.data() });
-            });
-            return applications;
-          } catch (error) {
-            console.error("Error loading user applications: ", error);
-            return [];
-          }
-        }
-      };
+        // Make Firebase available globally for other scripts
+        window.firebaseApp = app;
+        window.firebaseDb = db;
 
-      console.log("Firebase initialized successfully!");
+        // Firebase database functions
+        window.firebaseFunctions = {
+            // Add job application to Firestore
+            async addApplication(applicationData) {
+                try {
+                    const docRef = await addDoc(collection(db, "applications"), {
+                        ...applicationData,
+                        appliedDate: serverTimestamp(),
+                        status: "pending"
+                    });
+                    console.log("Application added with ID: ", docRef.id);
+                    return docRef.id;
+                } catch (error) {
+                    console.error("Error adding application: ", error);
+                    throw error;
+                }
+            },
+
+            // Load jobs from Firestore (fallback to hardcoded if empty)
+            async loadJobs() {
+                try {
+                    const jobsSnapshot = await getDocs(collection(db, "jobs"));
+                    if (!jobsSnapshot.empty) {
+                        const jobs = [];
+                        jobsSnapshot.forEach((doc) => {
+                            jobs.push({ id: doc.id, ...doc.data() });
+                        });
+                        return jobs;
+                    } else {
+                        // If no jobs in Firestore, use hardcoded jobs and optionally seed database
+                        console.log("No jobs found in Firestore, using hardcoded jobs");
+                        return null; // Let script.js handle hardcoded jobs
+                    }
+                } catch (error) {
+                    console.error("Error loading jobs from Firestore: ", error);
+                    return null; // Fallback to hardcoded jobs
+                }
+            },
+
+            // Get applications for current user
+            async getUserApplications(userEmail) {
+                try {
+                    const applicationsSnapshot = await getDocs(
+                        query(collection(db, "applications"), where("applicantEmail", "==", userEmail))
+                    );
+                    const applications = [];
+                    applicationsSnapshot.forEach((doc) => {
+                        applications.push({ id: doc.id, ...doc.data() });
+                    });
+                    return applications;
+                } catch (error) {
+                    console.error("Error loading user applications: ", error);
+                    return [];
+                }
+            }
+        };
+
+        console.log("Firebase initialized successfully!");
     </script>
-    
+
     <script>
-      document.addEventListener('DOMContentLoaded', async function () {
-        try {
-          const loggedIn = localStorage.getItem('loggedIn') === 'true';
-          const email = localStorage.getItem('currentUserEmail');
-
-          const authButtons = document.getElementById('authButtons');
-          const profileMenu = document.getElementById('profileMenu');
-          const profileNameEl = document.getElementById('profileName');
-          const profileToggle = document.getElementById('profileToggle');
-          const profileDropdown = document.getElementById('profileDropdown');
-          const dropdownHeader = document.getElementById('dropdownHeader');
-          const signOutBtn = document.getElementById('signOutBtn');
-          
-          // Mobile menu elements
-          const mobileProfileMenu = document.getElementById('mobileProfileMenu');
-          const mobileProfileName = document.getElementById('mobileProfileName');
-          const mobileProfileAvatar = document.getElementById('mobileProfileAvatar');
-          const mobileSignOutBtn = document.getElementById('mobileSignOutBtn');
-
-          if (loggedIn && email && authButtons && profileMenu) {
-            // Load user data from Firestore instead of localStorage
+        document.addEventListener('DOMContentLoaded', async function () {
             try {
-              // Wait for Firebase to be initialized
-              await new Promise(resolve => {
-                const checkFirebase = () => {
-                  if (window.firebaseDb) {
-                    resolve();
-                  } else {
-                    setTimeout(checkFirebase, 100);
-                  }
-                };
-                checkFirebase();
-              });
+                const loggedIn = localStorage.getItem('loggedIn') === 'true';
+                const email = localStorage.getItem('currentUserEmail');
 
-              // Query Firestore for user data
-              const { collection, query, where, getDocs } = await import("https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js");
-              
-              const usersRef = collection(window.firebaseDb, "users");
-              const q = query(usersRef, where("email", "==", email));
-              const querySnapshot = await getDocs(q);
+                const authButtons = document.getElementById('authButtons');
+                const profileMenu = document.getElementById('profileMenu');
+                const profileNameEl = document.getElementById('profileName');
+                const profileToggle = document.getElementById('profileToggle');
+                const profileDropdown = document.getElementById('profileDropdown');
+                const dropdownHeader = document.getElementById('dropdownHeader');
+                const signOutBtn = document.getElementById('signOutBtn');
 
-              let user = { name: 'User', email }; // fallback
-              
-              if (!querySnapshot.empty) {
-                querySnapshot.forEach((doc) => {
-                  user = doc.data();
+                // Mobile menu elements
+                const mobileProfileMenu = document.getElementById('mobileProfileMenu');
+                const mobileProfileName = document.getElementById('mobileProfileName');
+                const mobileProfileAvatar = document.getElementById('mobileProfileAvatar');
+                const mobileSignOutBtn = document.getElementById('mobileSignOutBtn');
+
+                async function checkLoginStatus() {
+                    if (loggedIn && email) {
+                        // User is logged in - load their data
+                        try {
+                            // Wait for Firebase to be initialized
+                            await new Promise(resolve => {
+                                const checkFirebase = () => {
+                                    if (window.firebaseDb) {
+                                        resolve();
+                                    } else {
+                                        setTimeout(checkFirebase, 100);
+                                    }
+                                };
+                                checkFirebase();
+                            });
+
+                            // Query Firestore for user data
+                            const { collection, query, where, getDocs } = await import("https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js");
+
+                            const usersRef = collection(window.firebaseDb, "users");
+                            const q = query(usersRef, where("email", "==", email));
+                            const querySnapshot = await getDocs(q);
+
+                            let user = { name: 'User', email }; // fallback
+
+                            if (!querySnapshot.empty) {
+                                querySnapshot.forEach((doc) => {
+                                    user = doc.data();
+                                });
+                            }
+
+                            const displayName = user.name || email || 'User';
+                            profileNameEl && (profileNameEl.textContent = displayName);
+
+                            // Set avatar initial
+                            const avatar = profileToggle && profileToggle.querySelector('span');
+                            if (avatar && displayName && displayName.length) {
+                                avatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
+                            }
+                            dropdownHeader && (dropdownHeader.textContent = displayName);
+
+                            // Update mobile menu elements
+                            const mobileProfileEmail = document.getElementById('mobileProfileEmail');
+                            mobileProfileName && (mobileProfileName.textContent = displayName);
+                            mobileProfileEmail && (mobileProfileEmail.textContent = email);
+                            if (mobileProfileAvatar && displayName && displayName.length) {
+                                mobileProfileAvatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
+                            }
+
+                            // Show admin link if user is admin
+                            const adminEmails = ['admin@mycareer.com', 'ahsanbutta@gmail.com'];
+                            if (adminEmails.includes(email)) {
+                                const adminLink = document.getElementById('adminLink');
+                                const mobileAdminLink = document.getElementById('mobileAdminLink');
+                                adminLink && adminLink.classList.remove('hidden');
+                                mobileAdminLink && mobileAdminLink.classList.remove('hidden');
+                            }
+
+                        } catch (error) {
+                            console.error("Error loading user from Firestore:", error);
+                        }
+
+                        // Hide auth buttons and show profile menu
+                        authButtons && authButtons.classList.add('hidden');
+                        if (profileMenu) {
+                            profileMenu.classList.remove('hidden');
+                            profileMenu.classList.add('md:block');
+                        }
+                        if (profileToggle) {
+                            profileToggle.classList.remove('hidden');
+                            profileToggle.classList.add('md:flex');
+                        }
+
+                        // Mobile: hide auth buttons, show profile menu
+                        const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+                        mobileAuthButtons && mobileAuthButtons.classList.add('hidden');
+                        mobileProfileMenu && mobileProfileMenu.classList.remove('hidden');
+                    } else {
+                        // User is NOT logged in - show auth buttons, hide profile menu completely
+                        authButtons && authButtons.classList.remove('hidden');
+                        profileMenu && profileMenu.classList.add('hidden');
+                        profileToggle && profileToggle.classList.add('hidden');
+
+                        // Mobile: show auth buttons, hide profile menu
+                        const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+                        mobileAuthButtons && mobileAuthButtons.classList.remove('hidden');
+                        mobileProfileMenu && mobileProfileMenu.classList.add('hidden');
+                    }
+                }
+
+                // Toggle dropdown with smooth transition
+                let isToggling = false;
+
+                // Initialize dropdown styles
+                if (profileDropdown) {
+                    profileDropdown.style.opacity = '0';
+                    profileDropdown.style.transform = 'translateY(-10px)';
+                }
+
+                function hideDropdown() {
+                    if (profileDropdown && !profileDropdown.classList.contains('hidden')) {
+                        profileDropdown.style.opacity = '0';
+                        profileDropdown.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            profileDropdown.classList.add('hidden');
+                        }, 300);
+                    }
+                }
+
+                function toggleDropdown() {
+                    if (isToggling) return;
+                    isToggling = true;
+
+                    if (profileDropdown) {
+                        if (profileDropdown.classList.contains('hidden')) {
+                            profileDropdown.classList.remove('hidden');
+                            void profileDropdown.offsetWidth;
+                            profileDropdown.style.opacity = '1';
+                            profileDropdown.style.transform = 'translateY(0)';
+                        } else {
+                            hideDropdown();
+                        }
+                    }
+
+                    setTimeout(() => {
+                        isToggling = false;
+                    }, 400);
+                }
+
+                profileToggle && profileToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    toggleDropdown();
                 });
-              }
 
-              const displayName = user.name || email || 'User';
-              profileNameEl && (profileNameEl.textContent = displayName);
-              
-              // Set avatar initial
-              const avatar = profileToggle && profileToggle.querySelector('span');
-              if (avatar && displayName && displayName.length) {
-                avatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
-              }
-              dropdownHeader && (dropdownHeader.textContent = displayName);
-              
-              // Update mobile menu elements
-              mobileProfileName && (mobileProfileName.textContent = displayName);
-              if (mobileProfileAvatar && displayName && displayName.length) {
-                mobileProfileAvatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
-              }
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (profileDropdown && profileMenu && !profileMenu.contains(e.target)) {
+                        hideDropdown();
+                    }
+                });
 
-              console.log("User profile loaded from Firestore:", user);
+                // Sign out handler for desktop
+                signOutBtn && signOutBtn.addEventListener('click', function () {
+                    // Clear all localStorage data
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    alert('You have been signed out successfully.');
+                    window.location.href = 'index.html';
+                });
 
-            } catch (error) {
-              console.error("Error loading user from Firestore:", error);
-              // Fallback to basic display
-              const displayName = email || 'User';
-              profileNameEl && (profileNameEl.textContent = displayName);
-              const avatar = profileToggle && profileToggle.querySelector('span');
-              if (avatar) {
-                avatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
-              }
-              dropdownHeader && (dropdownHeader.textContent = displayName);
-              
-              // Update mobile menu elements (fallback)
-              mobileProfileName && (mobileProfileName.textContent = displayName);
-              if (mobileProfileAvatar) {
-                mobileProfileAvatar.textContent = (displayName.trim()[0] || 'U').toUpperCase();
-              }
+                // Sign out handler for mobile
+                mobileSignOutBtn && mobileSignOutBtn.addEventListener('click', function () {
+                    // Clear all localStorage data
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    alert('You have been signed out successfully.');
+                    window.location.href = 'index.html';
+                });
+
+                // Run check on page load
+                checkLoginStatus();
+            } catch (e) {
+                console.error('Error in login status check:', e);
             }
-
-            // Hide desktop auth buttons and show profile menu when logged in
-            authButtons.classList.add('hidden');
-            profileMenu.classList.remove('hidden');
-            
-            // Show mobile profile menu when logged in
-            mobileProfileMenu && mobileProfileMenu.classList.remove('hidden');
-            
-            // Hide mobile auth buttons when logged in
-            const mobileAuthButtons = document.getElementById('mobileAuthButtons');
-            mobileAuthButtons && mobileAuthButtons.classList.add('hidden');
-          } else {
-            // User is not logged in - show auth buttons on desktop only and hide profile menu
-            if (authButtons) {
-              authButtons.classList.remove('hidden');
-            }
-            profileMenu && profileMenu.classList.add('hidden');
-            
-            // Hide mobile profile menu when not logged in
-            mobileProfileMenu && mobileProfileMenu.classList.add('hidden');
-            
-            // Show mobile auth buttons when not logged in
-            const mobileAuthButtons = document.getElementById('mobileAuthButtons');
-            mobileAuthButtons && mobileAuthButtons.classList.remove('hidden');
-          }
-
-          // Toggle dropdown
-          function hideDropdown() { profileDropdown && profileDropdown.classList.add('hidden'); }
-          function toggleDropdown() { profileDropdown && profileDropdown.classList.toggle('hidden'); }
-          profileToggle && profileToggle.addEventListener('click', function (e) {
-            e.stopPropagation();
-            toggleDropdown();
-          });
-          document.addEventListener('click', function () { hideDropdown(); });
-
-          // Sign out function
-          function handleSignOut() {
-            localStorage.setItem('loggedIn', 'false');
-            localStorage.removeItem('currentUserEmail');
-            hideDropdown();
-            window.location.href = 'index.html';
-          }
-          
-          // Desktop sign out
-          signOutBtn && signOutBtn.addEventListener('click', handleSignOut);
-          
-          // Mobile sign out
-          mobileSignOutBtn && mobileSignOutBtn.addEventListener('click', handleSignOut);
-        } catch (e) {}
-      });
+        });
     </script>
     <script src="email-service.js"></script>
     <script src="script.js"></script>

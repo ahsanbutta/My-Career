@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - MyCareer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#ea580c',
+            ntsBlue600: '#2563eb',
+            ntsBlue800: '#1e40af',
+            ntsSlate50: '#f8fafc',
+            ntsSlate100: '#f1f5f9',
+            ntsSlate200: '#e2e8f0',
+            ntsSlate600: '#475569',
+            ntsSlate800: '#1f2937',
+            ntsGreen600: '#059669',
+            ntsRed600: '#dc2626',
+            ntsOrange600: '#d97706',
+            ntsYellow: '#eab308'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .card { 
+      background: #fff; 
+      border: 1px solid #e2e8f0; 
+      border-radius: 14px; 
+      box-shadow: 0 10px 28px rgba(2,6,23,0.06);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      box-shadow: 0 15px 35px rgba(2,6,23,0.1);
+    }
+    .badge { 
+      font-weight: 700; 
+      font-size: 12px; 
+      padding: 6px 12px; 
+      border-radius: 999px; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 14px;
+      box-shadow: 0 10px 28px rgba(102, 126, 234, 0.3);
+    }
+    .table-header {
+      background: #f8fafc;
+      font-weight: 700;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .table-row {
+      border-bottom: 1px solid #e2e8f0;
+      transition: background 0.2s ease;
+    }
+    .table-row:hover {
+      background: #f8fafc;
+    }
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .close:hover,
+    .close:focus {
+      color: #000;
+    }
+    /* Force hide desktop profile menu on mobile */
+    @media (max-width: 768px) {
+      #adminMenuToggle {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-ntsSlate50 text-ntsSlate800">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-ntsBlue600 to-ntsBlue800 border-b border-ntsBlue800 sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+          <span class="text-2xl">👨‍💼</span>
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold text-white">Admin</h1>
+          <p class="text-xs text-blue-200">MyCareer Management</p>
+        </div>
+      </div>
+      <nav class="flex items-center gap-4">
+        <!-- Desktop Navigation -->
+        <a href="index.html" class="hidden md:block text-sm text-white hover:text-blue-200 transition">Home</a>
+        <button id="signOutBtn" class="hidden md:block px-4 py-2 bg-white text-ntsBlue800 rounded-lg font-semibold hover:bg-blue-50 transition">Sign Out</button>
+        
+        <!-- Desktop Profile Menu Toggle -->
+        <div class="relative hidden md:block">
+          <button id="adminMenuToggle" class="flex items-center gap-2 text-white hover:text-blue-200 transition">
+            <div class="w-9 h-9 bg-blue-500 rounded-full flex items-center justify-center">
+              <span id="adminAvatar" class="text-white font-bold text-sm">A</span>
+            </div>
+            <span id="adminName" class="font-semibold">Admin</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          <!-- Desktop Dropdown Menu -->
+          <div id="adminDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50">
+            <div class="px-4 py-3 bg-gradient-to-r from-ntsBlue600 to-ntsBlue800 text-white">
+              <div class="font-bold" id="adminNameDropdown">Admin</div>
+              <div class="text-xs text-blue-200" id="adminEmailDropdown">admin@mycareer.com</div>
+            </div>
+            <div class="py-2">
+              <button id="desktopSignOutBtn" class="w-full text-left flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition font-semibold">
+                <span class="mr-3">↪️</span> Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Hamburger Menu -->
+        <button id="mobileMenuToggle" class="md:hidden text-white hover:text-blue-200 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </nav>
+    </div>
+
+  </header>
+
+  <!-- Mobile Menu Dropdown -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-3">
+      <!-- Profile Section -->
+      <div class="flex items-center gap-3 pb-3 border-b border-gray-200">
+        <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+          <span id="mobileAdminAvatar" class="text-white font-bold text-lg">A</span>
+        </div>
+        <div>
+          <div class="font-bold text-gray-900" id="mobileAdminName">Admin</div>
+          <div class="text-xs text-gray-600" id="mobileAdminEmail">admin@mycareer.com</div>
+        </div>
+      </div>
+      <!-- Menu Items -->
+      <div class="py-2">
+        <a href="index.html" class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-50 rounded transition">
+          <span class="mr-3">🏠</span> Home
+        </a>
+        <button id="mobileSignOutBtn" class="w-full text-left flex items-center px-3 py-2 text-red-600 hover:bg-red-50 rounded transition font-semibold">
+          <span class="mr-3">↪️</span> Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Stats Section -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="card p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-sm text-ntsSlate600 mb-1">Total Applications</div>
+            <div id="totalApps" class="text-3xl font-extrabold text-ntsBlue800">0</div>
+          </div>
+          <div class="text-4xl">📋</div>
+        </div>
+      </div>
+      
+      <div class="card p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-sm text-ntsSlate600 mb-1">Pending Review</div>
+            <div id="pendingApps" class="text-3xl font-extrabold text-ntsOrange600">0</div>
+          </div>
+          <div class="text-4xl">⏳</div>
+        </div>
+      </div>
+      
+      <div class="card p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-sm text-ntsSlate600 mb-1">Approved</div>
+            <div id="approvedApps" class="text-3xl font-extrabold text-ntsGreen600">0</div>
+          </div>
+          <div class="text-4xl">✅</div>
+        </div>
+      </div>
+      
+      <div class="card p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-sm text-ntsSlate600 mb-1">Rejected</div>
+            <div id="rejectedApps" class="text-3xl font-extrabold text-ntsRed600">0</div>
+          </div>
+          <div class="text-4xl">❌</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters and Search -->
+    <section class="card p-4 mb-6">
+      <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+        <div class="flex flex-col md:flex-row gap-3 flex-1">
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search by name, email, job title..." 
+            class="flex-1 px-4 py-2 border border-ntsSlate200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ntsBlue600"
+          />
+          <select id="statusFilter" class="px-4 py-2 border border-ntsSlate200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ntsBlue600">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <button id="refreshBtn" class="px-6 py-2 bg-gradient-to-r from-ntsBlue600 to-ntsBlue800 text-white rounded-lg font-semibold hover:opacity-90 transition">
+          🔄 Refresh
+        </button>
+      </div>
+    </section>
+
+    <!-- Applications Table -->
+    <section class="card overflow-hidden">
+      <div class="p-4 border-b border-ntsSlate200 flex items-center justify-between">
+        <h2 class="text-xl font-extrabold">All Applications</h2>
+        <span id="resultCount" class="text-sm text-ntsSlate600">0 results</span>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="table-header">
+            <tr>
+              <th class="px-4 py-3 text-left text-sm">Applicant</th>
+              <th class="px-4 py-3 text-left text-sm">Job Title</th>
+              <th class="px-4 py-3 text-left text-sm">Company</th>
+              <th class="px-4 py-3 text-left text-sm">Applied Date</th>
+              <th class="px-4 py-3 text-left text-sm">Status</th>
+              <th class="px-4 py-3 text-left text-sm">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="applicationsTable">
+            <!-- Rows will be inserted here -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div id="emptyState" class="hidden text-center py-16">
+        <div class="text-6xl mb-4">📭</div>
+        <div class="font-extrabold text-ntsSlate800 text-xl mb-2">No Applications Found</div>
+        <div class="text-sm text-ntsSlate600">Applications will appear here once users start applying.</div>
+      </div>
+    </section>
+
+    <!-- Users Section -->
+    <section class="card mt-6 overflow-hidden">
+      <div class="p-4 border-b border-ntsSlate200">
+        <h2 class="text-xl font-extrabold">Registered Users</h2>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="table-header">
+            <tr>
+              <th class="px-4 py-3 text-left text-sm">Name</th>
+              <th class="px-4 py-3 text-left text-sm">Email</th>
+              <th class="px-4 py-3 text-left text-sm">Phone</th>
+              <th class="px-4 py-3 text-left text-sm">Role</th>
+              <th class="px-4 py-3 text-left text-sm">Registered</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable">
+            <!-- Rows will be inserted here -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div id="usersEmptyState" class="hidden text-center py-16">
+        <div class="text-6xl mb-4">👥</div>
+        <div class="font-extrabold text-ntsSlate800 text-xl mb-2">No Users Found</div>
+        <div class="text-sm text-ntsSlate600">Registered users will appear here.</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Application Detail Modal -->
+  <div id="detailModal" class="modal">
+    <div class="modal-content">
+      <div class="p-6 border-b border-ntsSlate200 bg-gradient-to-r from-ntsBlue600 to-ntsBlue800">
+        <span class="close text-white">&times;</span>
+        <h2 class="text-2xl font-extrabold text-white">Application Details</h2>
+      </div>
+      <div id="modalBody" class="p-6">
+        <!-- Content will be inserted here -->
+      </div>
+      <div class="p-6 border-t border-ntsSlate200 bg-ntsSlate50 flex gap-3 justify-end">
+        <button id="approveBtn" class="action-btn bg-ntsGreen600 text-white hover:bg-green-700">✓ Approve</button>
+        <button id="rejectBtn" class="action-btn bg-ntsRed600 text-white hover:bg-red-700">✗ Reject</button>
+        <button id="closeModalBtn" class="action-btn bg-ntsSlate200 text-ntsSlate800 hover:bg-ntsSlate300">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, where, updateDoc, doc, orderBy } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBAj2SLWwMSBDB4jl0VLjVhea9W6FkhXF0",
+      authDomain: "my-career-project-a1885.firebaseapp.com",
+      projectId: "my-career-project-a1885",
+      storageBucket: "my-career-project-a1885.firebasestorage.app",
+      messagingSenderId: "1006665032949",
+      appId: "1:1006665032949:web:175f91f2559139cda8d1bc"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Strong admin authentication - verify against Firestore
+    async function checkAdminAccess() {
+      const currentEmail = localStorage.getItem('currentUserEmail');
+      const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+      
+      // First check: Must be logged in
+      if (!isLoggedIn || !currentEmail) {
+        alert('Access denied. Please login first.');
+        window.location.href = 'login.html';
+        return false;
+      }
+
+      // Second check: Verify admin status from Firestore
+      try {
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("email", "==", currentEmail));
+        const querySnapshot = await getDocs(q);
+        
+        let isAdmin = false;
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach((doc) => {
+            const userData = doc.data();
+            // Check if user has admin role in database
+            if (userData.role === 'admin' || userData.isAdmin === true) {
+              isAdmin = true;
+            }
+          });
+        }
+
+        // Third check: Hardcoded admin emails as backup
+        const adminEmails = ['admin@mycareer.com', 'ahsanbutta@gmail.com'];
+        if (adminEmails.includes(currentEmail)) {
+          isAdmin = true;
+        }
+
+        if (!isAdmin) {
+          alert('Access denied. Admin privileges required.');
+          window.location.href = 'index.html';
+          return false;
+        }
+
+        return true;
+      } catch (error) {
+        console.error('Error verifying admin access:', error);
+        alert('Error verifying access. Please try again.');
+        window.location.href = 'index.html';
+        return false;
+      }
+    }
+
+    let allApplications = [];
+    let allUsers = [];
+    let currentApplication = null;
+
+    // Format date
+    function formatDate(date) {
+      if (!date) return 'N/A';
+      if (date.toDate) return date.toDate().toLocaleDateString();
+      if (typeof date === 'string') return new Date(date).toLocaleDateString();
+      return new Date(date).toLocaleDateString();
+    }
+
+    // Status badge
+    function statusBadge(status) {
+      const map = {
+        approved: 'bg-green-100 text-ntsGreen600',
+        rejected: 'bg-red-100 text-ntsRed600',
+        pending: 'bg-orange-100 text-ntsOrange600'
+      };
+      const cls = map[status] || 'bg-ntsSlate100 text-ntsSlate600';
+      const label = (status || 'pending').charAt(0).toUpperCase() + (status || 'pending').slice(1);
+      return `<span class="badge ${cls}">• ${label}</span>`;
+    }
+
+    // Load applications from Firestore
+    async function loadApplications() {
+      try {
+        const appsSnapshot = await getDocs(collection(db, "applications"));
+        allApplications = [];
+        appsSnapshot.forEach((doc) => {
+          allApplications.push({ id: doc.id, ...doc.data() });
+        });
+        
+        // Update stats
+        updateStats();
+        renderApplications(allApplications);
+      } catch (error) {
+        console.error("Error loading applications:", error);
+        alert("Error loading applications. Check console for details.");
+      }
+    }
+
+    // Load users from Firestore
+    async function loadUsers() {
+      try {
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        allUsers = [];
+        usersSnapshot.forEach((doc) => {
+          allUsers.push({ id: doc.id, ...doc.data() });
+        });
+        
+        renderUsers(allUsers);
+      } catch (error) {
+        console.error("Error loading users:", error);
+      }
+    }
+
+    // Update statistics
+    function updateStats() {
+      const total = allApplications.length;
+      const pending = allApplications.filter(a => (a.status || 'pending') === 'pending').length;
+      const approved = allApplications.filter(a => a.status === 'approved').length;
+      const rejected = allApplications.filter(a => a.status === 'rejected').length;
+
+      document.getElementById('totalApps').textContent = total;
+      document.getElementById('pendingApps').textContent = pending;
+      document.getElementById('approvedApps').textContent = approved;
+      document.getElementById('rejectedApps').textContent = rejected;
+    }
+
+    // Render applications table
+    function renderApplications(apps) {
+      const tbody = document.getElementById('applicationsTable');
+      const emptyState = document.getElementById('emptyState');
+      
+      document.getElementById('resultCount').textContent = `${apps.length} result${apps.length !== 1 ? 's' : ''}`;
+
+      if (apps.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      
+      tbody.innerHTML = apps.map(app => `
+        <tr class="table-row">
+          <td class="px-4 py-3">
+            <div class="font-semibold">${app.applicantName || 'N/A'}</div>
+            <div class="text-xs text-ntsSlate600">${app.applicantEmail || 'N/A'}</div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="font-medium">${app.jobTitle || app.title || 'N/A'}</div>
+          </td>
+          <td class="px-4 py-3 text-sm">${app.company || app.employer || 'N/A'}</td>
+          <td class="px-4 py-3 text-sm">${formatDate(app.appliedDate || app.createdAt)}</td>
+          <td class="px-4 py-3">${statusBadge(app.status || 'pending')}</td>
+          <td class="px-4 py-3">
+            <button onclick="viewApplication('${app.id}')" class="action-btn bg-ntsBlue600 text-white hover:bg-blue-700">
+              👁️ View
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Render users table
+    function renderUsers(users) {
+      const tbody = document.getElementById('usersTable');
+      const emptyState = document.getElementById('usersEmptyState');
+
+      if (users.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      
+      tbody.innerHTML = users.map(user => `
+        <tr class="table-row">
+          <td class="px-4 py-3 font-semibold">${user.name || 'N/A'}</td>
+          <td class="px-4 py-3 text-sm">${user.email || 'N/A'}</td>
+          <td class="px-4 py-3 text-sm">${user.phone || 'N/A'}</td>
+          <td class="px-4 py-3 text-sm">${user.role || 'N/A'}</td>
+          <td class="px-4 py-3 text-sm">${formatDate(user.createdAt || user.registeredAt)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // View application details
+    window.viewApplication = function(appId) {
+      currentApplication = allApplications.find(a => a.id === appId);
+      if (!currentApplication) return;
+
+      const modal = document.getElementById('detailModal');
+      const modalBody = document.getElementById('modalBody');
+
+      modalBody.innerHTML = `
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Applicant Name</div>
+              <div class="font-semibold">${currentApplication.applicantName || 'N/A'}</div>
+            </div>
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Email</div>
+              <div class="font-semibold">${currentApplication.applicantEmail || 'N/A'}</div>
+            </div>
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Phone</div>
+              <div class="font-semibold">${currentApplication.applicantPhone || 'N/A'}</div>
+            </div>
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Job Title</div>
+              <div class="font-semibold">${currentApplication.jobTitle || currentApplication.title || 'N/A'}</div>
+            </div>
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Company</div>
+              <div class="font-semibold">${currentApplication.company || currentApplication.employer || 'N/A'}</div>
+            </div>
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Applied Date</div>
+              <div class="font-semibold">${formatDate(currentApplication.appliedDate || currentApplication.createdAt)}</div>
+            </div>
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Status</div>
+              <div>${statusBadge(currentApplication.status || 'pending')}</div>
+            </div>
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Experience</div>
+              <div class="font-semibold">${currentApplication.experience || 'N/A'}</div>
+            </div>
+          </div>
+          
+          ${currentApplication.coverLetter ? `
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Cover Letter</div>
+              <div class="p-3 bg-ntsSlate50 rounded-lg text-sm">${currentApplication.coverLetter}</div>
+            </div>
+          ` : ''}
+          
+          ${currentApplication.resume ? `
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Resume</div>
+              <a href="${currentApplication.resume}" target="_blank" class="text-ntsBlue600 hover:underline text-sm">📄 View Resume</a>
+            </div>
+          ` : ''}
+          
+          ${currentApplication.reviewNotes ? `
+            <div>
+              <div class="text-xs text-ntsSlate600 font-semibold mb-1">Review Notes</div>
+              <div class="p-3 bg-yellow-50 rounded-lg text-sm">${currentApplication.reviewNotes}</div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      modal.style.display = 'block';
+    };
+
+    // Update application status
+    async function updateApplicationStatus(status) {
+      if (!currentApplication) return;
+
+      try {
+        const appRef = doc(db, "applications", currentApplication.id);
+        await updateDoc(appRef, {
+          status: status,
+          reviewedAt: new Date(),
+          reviewedBy: localStorage.getItem('currentUserEmail')
+        });
+
+        alert(`Application ${status}!`);
+        document.getElementById('detailModal').style.display = 'none';
+        await loadApplications();
+      } catch (error) {
+        console.error("Error updating application:", error);
+        alert("Error updating application status.");
+      }
+    }
+
+    // Filter applications
+    function filterApplications() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value;
+
+      let filtered = allApplications;
+
+      if (searchTerm) {
+        filtered = filtered.filter(app => 
+          (app.applicantName || '').toLowerCase().includes(searchTerm) ||
+          (app.applicantEmail || '').toLowerCase().includes(searchTerm) ||
+          (app.jobTitle || app.title || '').toLowerCase().includes(searchTerm) ||
+          (app.company || app.employer || '').toLowerCase().includes(searchTerm)
+        );
+      }
+
+      if (statusFilter) {
+        filtered = filtered.filter(app => (app.status || 'pending') === statusFilter);
+      }
+
+      renderApplications(filtered);
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', filterApplications);
+    document.getElementById('statusFilter').addEventListener('change', filterApplications);
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      loadApplications();
+      loadUsers();
+    });
+
+    document.getElementById('approveBtn').addEventListener('click', () => updateApplicationStatus('approved'));
+    document.getElementById('rejectBtn').addEventListener('click', () => updateApplicationStatus('rejected'));
+
+    // Modal controls
+    const modal = document.getElementById('detailModal');
+    const closeBtn = document.querySelector('.close');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    closeBtn.onclick = () => modal.style.display = 'none';
+    closeModalBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = (event) => {
+      if (event.target == modal) modal.style.display = 'none';
+    };
+
+    // Sign out handlers
+    function handleSignOut() {
+      localStorage.setItem('loggedIn', 'false');
+      localStorage.removeItem('currentUserEmail');
+      alert('Signed out successfully.');
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('signOutBtn').addEventListener('click', handleSignOut);
+    document.getElementById('desktopSignOutBtn').addEventListener('click', handleSignOut);
+    document.getElementById('mobileSignOutBtn').addEventListener('click', handleSignOut);
+
+    // Set admin name and avatar
+    const adminEmail = localStorage.getItem('currentUserEmail');
+    if (adminEmail) {
+      const adminNameText = adminEmail.split('@')[0];
+      const adminInitial = adminNameText.charAt(0).toUpperCase();
+      
+      // Desktop elements
+      document.getElementById('adminName').textContent = adminNameText;
+      document.getElementById('adminNameDropdown').textContent = adminNameText;
+      document.getElementById('adminEmailDropdown').textContent = adminEmail;
+      document.getElementById('adminAvatar').textContent = adminInitial;
+      
+      // Mobile elements
+      document.getElementById('mobileAdminName').textContent = adminNameText;
+      document.getElementById('mobileAdminEmail').textContent = adminEmail;
+      document.getElementById('mobileAdminAvatar').textContent = adminInitial;
+    }
+
+    // Desktop: Toggle admin dropdown menu
+    const adminMenuToggle = document.getElementById('adminMenuToggle');
+    const adminDropdown = document.getElementById('adminDropdown');
+
+    adminMenuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      adminDropdown.classList.toggle('hidden');
+    });
+
+    // Close desktop dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!adminMenuToggle.contains(e.target) && !adminDropdown.contains(e.target)) {
+        adminDropdown.classList.add('hidden');
+      }
+    });
+
+    // Mobile: Toggle hamburger menu
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    mobileMenuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+
+    // Check admin access and load data after all functions are defined
+    checkAdminAccess().then(hasAccess => {
+      if (!hasAccess) return;
+      
+      // If admin access verified, load the dashboard
+      loadApplications();
+      loadUsers();
+    });
+  </script>
+</body>
+</html>

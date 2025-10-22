@@ -719,6 +719,19 @@ function closeMobileMenu() {
     }
 }
 
+// Close mobile menu when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('click', function(event) {
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuButton = event.target.closest('button[onclick*="toggleMobileMenu"]');
+        const clickedInsideMenu = event.target.closest('#mobileMenu');
+        
+        if (mobileMenu && !mobileMenu.classList.contains('hidden') && !mobileMenuButton && !clickedInsideMenu) {
+            closeMobileMenu();
+        }
+    });
+});
+
 // Enhanced Search Function
 function searchJobs() {
     const searchTerm = document.getElementById('heroSearchInput').value.toLowerCase();
@@ -1251,7 +1264,7 @@ function register() {
         const loggedIn = localStorage.getItem("loggedIn") === "true";
         if (!isRegisteredFlag || !loggedIn) {
             alert("Please register/login first to apply for this job.");
-            window.location.href = "register.html";
+            window.location.href = "login.html";
             return;
         }
         showApplicationModal();
@@ -1262,7 +1275,7 @@ async function applyJob() {
   const currentEmail = localStorage.getItem("currentUserEmail");
   if (!loggedIn || !currentEmail) {
     alert("Please register/login before applying for a job!");
-    window.location.href = "register.html";
+    window.location.href = "login.html";
     return;
   }
   try {
@@ -1575,8 +1588,109 @@ function updateStats() {
     document.getElementById('totalJobs').textContent = jobs.length;
 }
 
+// Authentication UI Functions
+function checkAuthStatus() {
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+    const userEmail = localStorage.getItem('currentUserEmail');
+    const isRegistered = localStorage.getItem('isRegistered') === 'true';
+    
+    if (isLoggedIn && userEmail) {
+        // User is logged in - show profile menu, hide auth buttons
+        showProfileMenu(userEmail);
+        hideAuthButtons();
+    } else {
+        // User is not logged in - show auth buttons, hide profile menu
+        showAuthButtons();
+        hideProfileMenu();
+    }
+}
+
+function showProfileMenu(email) {
+    const profileMenu = document.getElementById('profileMenu');
+    const profileName = document.getElementById('profileName');
+    const profileToggle = document.getElementById('profileToggle');
+    const profileDropdown = document.getElementById('profileDropdown');
+    
+    if (profileMenu) {
+        profileMenu.classList.remove('hidden');
+        
+        // Extract name from email or use stored name
+        const name = email.split('@')[0];
+        const displayName = name.charAt(0).toUpperCase() + name.slice(1);
+        
+        if (profileName) {
+            profileName.textContent = displayName;
+        }
+        
+        // Update avatar initial
+        const avatar = profileToggle?.querySelector('span');
+        if (avatar) {
+            avatar.textContent = displayName.charAt(0).toUpperCase();
+        }
+        
+        // Setup profile dropdown toggle
+        if (profileToggle && profileDropdown) {
+            profileToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!profileMenu.contains(e.target)) {
+                    profileDropdown.classList.add('hidden');
+                }
+            });
+        }
+        
+        // Setup sign out button
+        const signOutBtn = document.getElementById('signOutBtn');
+        if (signOutBtn) {
+            signOutBtn.addEventListener('click', handleSignOut);
+        }
+    }
+}
+
+function hideProfileMenu() {
+    const profileMenu = document.getElementById('profileMenu');
+    if (profileMenu) {
+        profileMenu.classList.add('hidden');
+    }
+}
+
+function showAuthButtons() {
+    const authButtons = document.getElementById('authButtons');
+    if (authButtons) {
+        authButtons.classList.remove('hidden');
+    }
+}
+
+function hideAuthButtons() {
+    const authButtons = document.getElementById('authButtons');
+    if (authButtons) {
+        authButtons.classList.add('hidden');
+    }
+}
+
+function handleSignOut() {
+    // Clear all session data
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('currentUserEmail');
+    localStorage.removeItem('currentUserId');
+    localStorage.removeItem('isRegistered');
+    
+    // Show message
+    alert('✅ You have been signed out successfully!');
+    
+    // Redirect to home page and refresh
+    window.location.href = 'index.html';
+}
+
 // Initialize App
 document.addEventListener('DOMContentLoaded', function() {
+    // Check authentication status first
+    checkAuthStatus();
+    
     showHome();
     
     // Form submit is handled by onsubmit attribute in HTML

@@ -4,144 +4,64 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register - MyCareer</title>
-
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: #5a6d80;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .register-container {
-      background: #f5f7fa;
-      padding: 40px 30px;
-      border-radius: 10px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-      width: 100%;
-      max-width: 440px;
-    }
-
-    .register-container h2 {
-      text-align: center;
-      font-size: 26px;
-      color: #333;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
-
-    .register-container p {
-      text-align: center;
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 25px;
-    }
-
-    label {
-      display: block;
-      font-size: 14px;
-      color: #444;
-      margin-bottom: 6px;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-      background-color: #fff;
-      transition: border-color 0.2s;
-    }
-
-    input:focus {
-      border-color: #4a90e2;
-      outline: none;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .register-btn {
-      width: 100%;
-      background-color: #28a745;
-      color: white;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.3s ease;
-    }
-
-    .register-btn:hover {
-      background-color: #218838;
-    }
-
-    @media (max-width: 480px) {
-      .register-container {
-        margin: 20px;
-        padding: 30px 20px;
-      }
-    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI, Tahoma, Verdana;}
+    body{background:#5a6d80;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+    .register-container{background:#f5f7fa;padding:40px 30px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.15);width:100%;max-width:440px;}
+    h2{text-align:center;font-size:26px;color:#333;margin-bottom:10px;font-weight:600}
+    p{text-align:center;color:#666;margin-bottom:12px}
+    label{display:block;margin-bottom:6px;color:#444}
+    input{width:100%;padding:12px 14px;border:1px solid #ccc;border-radius:6px;font-size:15px;background:#fff}
+    input:focus{border-color:#4a90e2;outline:none}
+    .form-group{margin-bottom:14px}
+    .register-btn{width:100%;background:#28a745;color:#fff;padding:12px;border:0;border-radius:6px;font-weight:600;cursor:pointer}
+    .error { color:#b00020; font-size:13px; margin-top:6px; display:none; }
+    .success { color: #155724; background:#d4edda; padding:8px; border-radius:6px; margin-bottom:12px; display:none; }
+    small.hint { display:block; color:#666; margin-top:6px; font-size:12px; }
   </style>
 </head>
 <body>
-
   <div class="register-container">
     <h2>Register</h2>
     <p>Create your account. It's free and only takes a minute.</p>
-    
-    <form id="registerForm">
+
+    <div id="message" class="success"></div>
+
+    <form id="registerForm" novalidate>
       <div class="form-group">
         <label for="name">Full Name</label>
-        <input type="text" id="name" placeholder="Enter your full name" required />
+        <input id="name" type="text" placeholder="Enter your full name" required maxlength="50" />
+        <div id="nameError" class="error">Name must contain only letters and spaces.</div>
       </div>
+
       <div class="form-group">
         <label for="email">Email Address</label>
-        <input type="email" id="email" placeholder="Enter your email" required />
+        <input id="email" type="email" placeholder="Enter your email" required />
+        <div id="emailError" class="error">Please enter a valid email address.</div>
       </div>
+
       <div class="form-group">
-        <label for="phone">Phone Number (with country code)</label>
-        <input type="tel" id="phone" placeholder="+1 1234567890" required />
+        <label for="phone">Phone Number (11 digits)</label>
+        <input id="phone" type="tel" placeholder="e.g. 03001234567" required maxlength="11" />
+        <small class="hint">Enter exactly 11 digits (numbers only). No + or country prefix.</small>
+        <div id="phoneError" class="error">Phone must be exactly 11 digits (numbers only).</div>
       </div>
+
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter your password" required minlength="6" />
+        <input id="password" type="password" placeholder="Enter password (min 6)" minlength="6" required />
+        <div id="passwordError" class="error">Password must be at least 6 characters.</div>
       </div>
+
       <button type="submit" class="register-btn">Register Now</button>
     </form>
   </div>
 
   <script type="module">
-    // Import Firebase functions from CDN
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
     import { getAnalytics, isSupported } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
-    import { 
-      getFirestore, 
-      collection, 
-      addDoc, 
-      getDocs, 
-      query, 
-      where,
-      serverTimestamp 
-    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBAj2SLWwMSBDB4jl0VLjVhea9W6FkhXF0",
       authDomain: "my-career-project-a1885.firebaseapp.com",
@@ -152,69 +72,152 @@
       measurementId: "G-V34ZR2C9PV"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    
-    // Initialize Analytics
-    isSupported().then((supported) => {
-      if (supported) {
-        const analytics = getAnalytics(app);
+    isSupported().then(s => s && getAnalytics(app));
+
+    // Elements
+    const form = document.getElementById('registerForm');
+    const nameEl = document.getElementById('name');
+    const emailEl = document.getElementById('email');
+    const phoneEl = document.getElementById('phone');
+    const passwordEl = document.getElementById('password');
+
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    const phoneError = document.getElementById('phoneError');
+    const passwordError = document.getElementById('passwordError');
+    const message = document.getElementById('message');
+
+    // Validation helpers
+    function validateName(name) {
+      // allow letters and spaces only (Latin letters). prevents integer-only or digits.
+      const re = /^[A-Za-z\s]+$/;
+      return re.test(name) && name.trim().length >= 2;
+    }
+
+    function validateEmail(email) {
+      // reasonable email regex (not perfect but good)
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      return re.test(email);
+    }
+
+    function validatePhone(phone) {
+      // exactly 11 digits
+      const re = /^\d{11}$/;
+      return re.test(phone);
+    }
+
+    function validatePassword(pwd) {
+      return typeof pwd === 'string' && pwd.length >= 6;
+    }
+
+    // Prevent already logged-in user from using register
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('loggedIn') === 'true') {
+        window.location.href = 'profile.html';
       }
     });
 
-    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+    // Live validation (optional)
+    nameEl.addEventListener('input', () => {
+      if (validateName(nameEl.value)) {
+        nameError.style.display = 'none';
+      }
+    });
+
+    emailEl.addEventListener('input', () => {
+      if (validateEmail(emailEl.value)) {
+        emailError.style.display = 'none';
+      }
+    });
+
+    phoneEl.addEventListener('input', () => {
+      // enforce length limit in UI too
+      if (phoneEl.value.length > 11) phoneEl.value = phoneEl.value.slice(0, 11);
+      if (validatePhone(phoneEl.value)) {
+        phoneError.style.display = 'none';
+      }
+    });
+
+    passwordEl.addEventListener('input', () => {
+      if (validatePassword(passwordEl.value)) {
+        passwordError.style.display = 'none';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const password = document.getElementById("password").value.trim();
+      // read values
+      const name = nameEl.value.trim();
+      const email = emailEl.value.trim().toLowerCase();
+      const phone = phoneEl.value.trim();
+      const password = passwordEl.value;
 
-      if (!name || !email || !phone || !password) {
-        alert("Please fill in all required fields.");
-        return;
+      // reset messages
+      nameError.style.display = 'none';
+      emailError.style.display = 'none';
+      phoneError.style.display = 'none';
+      passwordError.style.display = 'none';
+      message.style.display = 'none';
+
+      // validate
+      let ok = true;
+
+      if (!validateName(name)) {
+        nameError.style.display = 'block';
+        ok = false;
+      }
+      if (!validateEmail(email)) {
+        emailError.style.display = 'block';
+        ok = false;
+      }
+      if (!validatePhone(phone)) {
+        phoneError.style.display = 'block';
+        ok = false;
+      }
+      if (!validatePassword(password)) {
+        passwordError.style.display = 'block';
+        ok = false;
       }
 
-      try {
-        // Check if user already exists in Firestore
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("email", "==", email));
-        const querySnapshot = await getDocs(q);
+      if (!ok) return; // do not proceed if validation fails
 
-        if (!querySnapshot.empty) {
-          alert(" This email is already registered. Please login instead.");
-          window.location.href = "login.html";
+      try {
+        // Check if email already exists
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', email));
+        const snap = await getDocs(q);
+
+        if (!snap.empty) {
+          // Already registered - redirect to login (no success alert)
+          window.location.href = 'login.html';
           return;
         }
 
-        // Add user to Firestore
-        const docRef = await addDoc(collection(db, "users"), {
-          name: name,
-          email: email,
-          phone: phone,
-          password: password, // In production, hash this password!
+        // Save user record only, with isVerified true (means passed client validation)
+        await addDoc(collection(db, 'users'), {
+          name,
+          email,
+          phone,
+          password,          // demo only — don't store plain passwords in production
           registeredAt: serverTimestamp(),
-          isActive: true
+          isActive: true,
+          isVerified: true   // saved after validation
         });
 
-        console.log("User registered with ID: ", docRef.id);
+        // Optionally show a small message before redirect (hidden requirement)
+        // But as you wanted no success alert, we just redirect
+        window.location.href = 'index.html';
 
-        // Store session data
-        localStorage.setItem('loggedIn', 'true');
-        localStorage.setItem('currentUserEmail', email);
-        localStorage.setItem('currentUserId', docRef.id);
-        localStorage.setItem('isRegistered', 'true');
-
-        alert(" Registration successful! Go to login now ");
-        window.location.href = "login.html";
-
-      } catch (error) {
-        console.error("Registration error:", error);
-        alert(" Registration failed. Please try again.");
+      } catch (err) {
+        console.error('Register error:', err);
+        // show a non-blocking error message
+        message.textContent = 'Registration failed. Please try again later.';
+        message.style.display = 'block';
       }
     });
   </script>
-
 </body>
 </html>
